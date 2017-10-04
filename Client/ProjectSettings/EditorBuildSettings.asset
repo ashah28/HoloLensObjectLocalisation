@@ -8,3 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HoloClient.unity
     guid: 9beffc03f42891642a7b7cbafa685b55
+  - enabled: 0
+    path: Assets/HoloToolkit-Examples/SpatialUnderstanding/SpatialUnderstanding-FeatureOverview/Scenes/SpatialUnderstandingExample.unity
+    guid: 7ecf1c34f0ac4b4449076e91efc011be
+  - enabled: 0
+    path: Assets/HoloToolkit-Examples/Prototyping/Scenes/PositionAnObject.unity
+    guid: b0ae689c40c1c5f4799a829149d9270d
