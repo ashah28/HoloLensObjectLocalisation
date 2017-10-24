@@ -47,6 +47,7 @@ public class ImageCapture : MonoBehaviour
         }
 
         StartCoroutine(CheckServerStatus());
+        HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate += OnInputClicked;
     }
 
     /// <summary>
@@ -57,8 +58,20 @@ public class ImageCapture : MonoBehaviour
         if(photoCaptureObject != null)
             photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);
 
-        DebugManager.Instance.PrintToRunningLog("Cam disabled");
+        HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate -= OnInputClicked;
+
+        if (DebugManager.Instance)
+            DebugManager.Instance.PrintToRunningLog("Cam disabled");
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void OnInputClicked()
+    {
+        print("input clicked");
+    }
+
 
     /// <summary>
     /// This function triggers the camera
