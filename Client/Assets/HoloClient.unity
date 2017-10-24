@@ -490,26 +490,6 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1631672965}
-    - target: {fileID: 114497830729187990, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
-        type: 2}
-      propertyPath: m_FontData.m_FontSize
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 114497830729187990, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
-        type: 2}
-      propertyPath: m_FontData.m_MinSize
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114414725612286150, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
-        type: 2}
-      propertyPath: m_FontData.m_FontSize
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 223070611765742588, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
-        type: 2}
-      propertyPath: m_PlaneDistance
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cd7a00f6a6e1a2c4089fce3144b807cb, type: 2}
   m_IsPrefabParent: 0
@@ -535,7 +515,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4315010379072772, guid: e922ff576c336d44db0bf84a9c781ca2, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4315010379072772, guid: e922ff576c336d44db0bf84a9c781ca2, type: 2}
       propertyPath: m_LocalRotation.x
@@ -562,6 +542,10 @@ Prefab:
       propertyPath: OnSelectEvents.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1542775320}
+    - target: {fileID: 1659679227456758, guid: e922ff576c336d44db0bf84a9c781ca2, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e922ff576c336d44db0bf84a9c781ca2, type: 2}
   m_IsPrefabParent: 0

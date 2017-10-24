@@ -69,7 +69,7 @@ public class ImageCapture : MonoBehaviour
     /// </summary>
     public void OnInputClicked()
     {
-        print("input clicked");
+        DebugManager.Instance.PrintToRunningLog("input clicked");
     }
 
 
