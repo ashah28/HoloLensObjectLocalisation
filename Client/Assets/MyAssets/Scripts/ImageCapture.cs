@@ -13,9 +13,14 @@ public class ImageCapture : MonoBehaviour
     PhotoCapture photoCaptureObject = null;
     Texture2D targetTexture = null;
 
+    [SerializeField] Transform cameraT;
+
     [SerializeField] Renderer quadRendererCustom;
     [SerializeField] string serverAddress;
     [SerializeField] string queryAPI;
+
+    [SerializeField] Vector3 lastLocation = Vector3.zero;
+    [SerializeField] Vector3 lastRotation = Vector3.zero;
 
     /// <summary>
     /// Activate camera on app activation
@@ -65,21 +70,23 @@ public class ImageCapture : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Called whenever a click is registered on Hololens. Blocked by nothing! Pure, simple, holo click...
     /// </summary>
     public void OnInputClicked()
     {
-        DebugManager.Instance.PrintToRunningLog("input clicked");
+        CaptureImage();
+        lastLocation = Camera.main.transform.position;
+        lastRotation = Camera.main.transform.rotation.eulerAngles;
+        DebugManager.Instance.PrintToRunningLog("Capture at: R:" + lastRotation + " P:" + lastLocation);
     }
-
-
+    
     /// <summary>
     /// This function triggers the camera
     /// </summary>
     public void CaptureImage()
     {
-        DebugManager.Instance.PrintToRunningLog("Capture");
-        photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
+        if(!Application.isEditor)
+            photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
     }
 
     /// <summary>
