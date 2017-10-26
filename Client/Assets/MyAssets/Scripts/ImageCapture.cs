@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine.VR.WSA.WebCam;
 using System;
+using UnityEngine.UI;
 using System.IO;
 
 /// <summary>
@@ -12,9 +13,8 @@ public class ImageCapture : MonoBehaviour
 {
     PhotoCapture photoCaptureObject = null;
     Texture2D targetTexture = null;
-
-    [SerializeField] Transform cameraT;
-
+    
+    [SerializeField] RawImage previewImage;
     [SerializeField] Renderer quadRendererCustom;
     [SerializeField] string serverAddress;
     [SerializeField] string queryAPI;
@@ -45,7 +45,7 @@ public class ImageCapture : MonoBehaviour
                 // Activate the camera
                 photoCaptureObject.StartPhotoModeAsync(cameraParameters, delegate (PhotoCapture.PhotoCaptureResult result)
                 {
-                    DebugManager.Instance.PrintToRunningLog("Cam enabled");
+                    DebugManager.Instance.PrintToRunningLog("Cam enabled @ " + cameraResolution.width + " X " + cameraResolution.height);
                     photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
                 });
             });
@@ -101,12 +101,24 @@ public class ImageCapture : MonoBehaviour
 
         //Set texture to renderer. Probably need to do just once... WIP
         quadRendererCustom.material.mainTexture = targetTexture;
+        previewImage.texture = targetTexture;
 
         try
         {
             byte[] imageData = targetTexture.EncodeToJPG(90);
             WriteImageToDisk(imageData);
             StartCoroutine(SendImageToServer(imageData));
+
+            Matrix4x4 cameraToWorldMatrix;
+            photoCaptureFrame.TryGetCameraToWorldMatrix(out cameraToWorldMatrix);
+
+            Vector3 position = cameraToWorldMatrix.MultiplyPoint(Vector3.zero);
+            // Position the canvas object slightly in front
+            // of the real world web camera.
+            //Vector3 position = cameraToWorldMatrix.GetColumn(3) - cameraToWorldMatrix.GetColumn(2);
+            Quaternion rotation = Quaternion.LookRotation(-cameraToWorldMatrix.GetColumn(2), cameraToWorldMatrix.GetColumn(1));
+
+            DebugManager.Instance.PrintToRunningLog("R:" + rotation.eulerAngles + " P " + position );
         }
         catch (Exception e)
         {
@@ -144,6 +156,8 @@ public class ImageCapture : MonoBehaviour
         }
         DebugManager.Instance.PrintToRunningLog("Upload complete");
         yield return www;
+
+        print(www.text);
 
         DebugManager.Instance.PrintToInfoLog("Server-> " + (www.error == null ? www.text : " ERR :" + www.error ));
     }

@@ -108,6 +108,12 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &90822368 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114445372107651228, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
+    type: 2}
+  m_PrefabInternal: {fileID: 1562674456}
+  m_Script: {fileID: -98529514, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &596549540
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,7 +284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1424800718
 Transform:
   m_ObjectHideFlags: 0
@@ -354,6 +360,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1542775321}
   - component: {fileID: 1542775320}
+  - component: {fileID: 1542775322}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -372,9 +379,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b913d2588376f44f85c2701aac3bc3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  previewImage: {fileID: 90822368}
   quadRendererCustom: {fileID: 1424800719}
   serverAddress: http://10.208.17.46:5000
   queryAPI: /queryimg
+  lastLocation: {x: 0, y: 0, z: 0}
+  lastRotation: {x: 0, y: 0, z: 0}
 --- !u!4 &1542775321
 Transform:
   m_ObjectHideFlags: 0
@@ -388,6 +398,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1542775322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1542775319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85eee619954e5994881059ed02b2d58b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1562674456
 Prefab:
   m_ObjectHideFlags: 0
