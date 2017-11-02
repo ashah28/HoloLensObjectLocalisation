@@ -1,0 +1,1 @@
+Image/Holoscreen = 2.5 ~~ 2.3 after repeated experiments

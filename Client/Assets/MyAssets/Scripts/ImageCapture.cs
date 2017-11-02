@@ -52,6 +52,9 @@ public class ImageCapture : MonoBehaviour
         }
 
         StartCoroutine(CheckServerStatus());
+
+        StartCoroutine(ParseSampleResponse());
+
         HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate += OnInputClicked;
     }
 
@@ -159,6 +162,10 @@ public class ImageCapture : MonoBehaviour
 
         print(www.text);
 
+        ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
+
+        GetComponent<ObjectLocator>().LocateInScene(resp, lastLocation, lastRotation);
+
         DebugManager.Instance.PrintToInfoLog("Server-> " + (www.error == null ? www.text : " ERR :" + www.error ));
     }
 
@@ -171,6 +178,20 @@ public class ImageCapture : MonoBehaviour
         WWW www = new WWW(serverAddress);
         yield return www;
         DebugManager.Instance.PrintToInfoLog("Server Status-> " + (www.error == null ? www.text : " ERR :" + www.error));
+    }
+
+    /// <summary>
+    /// Parse a static sample response for the sake of faster testing
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator ParseSampleResponse()
+    {
+        WWW www = new WWW(serverAddress + "/resp");
+        yield return www;
+
+        ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
+        print("************  " + resp.recognizedObjects.Length);
+        GetComponent<ObjectLocator>().LocateInScene(resp, lastLocation, lastRotation);
     }
 
     /// <summary>
