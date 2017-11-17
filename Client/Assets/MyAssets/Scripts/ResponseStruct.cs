@@ -12,5 +12,6 @@ public class ResponseStruct {
 public class ObjectRecognition
 {
     public string type;
-    public int[] details;
+    public float[] details;
+    public float score;
 }

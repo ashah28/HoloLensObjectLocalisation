@@ -13,20 +13,24 @@ public class ImageCapture : MonoBehaviour
 {
     PhotoCapture photoCaptureObject = null;
     Texture2D targetTexture = null;
-    
+    ObjectLocator objLocatorScript;
+
     [SerializeField] RawImage previewImage;
     [SerializeField] Renderer quadRendererCustom;
     [SerializeField] string serverAddress;
     [SerializeField] string queryAPI;
 
-    [SerializeField] Vector3 lastLocation = Vector3.zero;
-    [SerializeField] Vector3 lastRotation = Vector3.zero;
+//    [SerializeField] Vector3 lastLocation = Vector3.zero;
+//    [SerializeField] Vector3 lastRotation = Vector3.zero;
 
     /// <summary>
     /// Activate camera on app activation
     /// </summary>
     void OnEnable()
     {
+        objLocatorScript = GetComponent<ObjectLocator>();
+        StartCoroutine(CheckServerStatus());
+
         if (!Application.isEditor)
         {
             Resolution cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
@@ -48,13 +52,17 @@ public class ImageCapture : MonoBehaviour
                     DebugManager.Instance.PrintToRunningLog("Cam enabled @ " + cameraResolution.width + " X " + cameraResolution.height);
                     photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
                 });
+
+                objLocatorScript.camResolutionWidth = cameraResolution.width;
+                objLocatorScript.camResolutionHeight = cameraResolution.height;
             });
         }
-
-        StartCoroutine(CheckServerStatus());
-
-        StartCoroutine(ParseSampleResponse());
-
+        else
+        {
+            objLocatorScript.camResolutionWidth = previewImage.texture.width;
+            objLocatorScript.camResolutionHeight = previewImage.texture.height;
+            StartCoroutine(ParseSampleResponse());
+        }
         HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate += OnInputClicked;
     }
 
@@ -78,9 +86,9 @@ public class ImageCapture : MonoBehaviour
     public void OnInputClicked()
     {
         CaptureImage();
-        lastLocation = Camera.main.transform.position;
-        lastRotation = Camera.main.transform.rotation.eulerAngles;
-        DebugManager.Instance.PrintToRunningLog("Capture at: R:" + lastRotation + " P:" + lastLocation);
+//        lastLocation = Camera.main.transform.position;
+//        lastRotation = Camera.main.transform.rotation.eulerAngles;
+//        DebugManager.Instance.PrintToRunningLog("Capture at: R:" + lastRotation + " P:" + lastLocation);
     }
     
     /// <summary>
@@ -110,18 +118,21 @@ public class ImageCapture : MonoBehaviour
         {
             byte[] imageData = targetTexture.EncodeToJPG(90);
             WriteImageToDisk(imageData);
-            StartCoroutine(SendImageToServer(imageData));
 
             Matrix4x4 cameraToWorldMatrix;
-            photoCaptureFrame.TryGetCameraToWorldMatrix(out cameraToWorldMatrix);
+            Matrix4x4 projectionMatrix;
 
+            photoCaptureFrame.TryGetCameraToWorldMatrix(out cameraToWorldMatrix);
+            photoCaptureFrame.TryGetProjectionMatrix(0, 5, out projectionMatrix);
             Vector3 position = cameraToWorldMatrix.MultiplyPoint(Vector3.zero);
             // Position the canvas object slightly in front
             // of the real world web camera.
             //Vector3 position = cameraToWorldMatrix.GetColumn(3) - cameraToWorldMatrix.GetColumn(2);
-            Quaternion rotation = Quaternion.LookRotation(-cameraToWorldMatrix.GetColumn(2), cameraToWorldMatrix.GetColumn(1));
+			Quaternion rotation = Quaternion.LookRotation(-cameraToWorldMatrix.GetColumn(2), cameraToWorldMatrix.GetColumn(1));
 
             DebugManager.Instance.PrintToRunningLog("R:" + rotation.eulerAngles + " P " + position );
+
+            StartCoroutine(SendImageToServer(imageData, cameraToWorldMatrix, projectionMatrix));
         }
         catch (Exception e)
         {
@@ -138,7 +149,7 @@ public class ImageCapture : MonoBehaviour
         String currentFileName = GenerateFileName();
         String filePath = Application.persistentDataPath + "/" + currentFileName;
         File.WriteAllBytes(filePath + ".jpg", imageData);
-        DebugManager.Instance.PrintToInfoLog("Saved: " + filePath);
+        //DebugManager.Instance.PrintToInfoLog("Saved: " + filePath);
     }
 
     /// <summary>
@@ -146,7 +157,7 @@ public class ImageCapture : MonoBehaviour
     /// </summary>
     /// <param name="imageData"></param>
     /// <returns></returns>
-    IEnumerator SendImageToServer(byte[] imageData)
+    IEnumerator SendImageToServer(byte[] imageData, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
     {
         WWWForm form = new WWWForm();
         form.AddBinaryData("image", imageData, GenerateFileName() + ".jpg", "image/jpeg");
@@ -164,9 +175,12 @@ public class ImageCapture : MonoBehaviour
 
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
 
-        GetComponent<ObjectLocator>().LocateInScene(resp, lastLocation, lastRotation);
+		objLocatorScript.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
 
-        DebugManager.Instance.PrintToInfoLog("Server-> " + (www.error == null ? www.text : " ERR :" + www.error ));
+        if (www.error != null)
+        {
+            DebugManager.Instance.PrintToInfoLog("Server-> " + www.error);
+        }
     }
 
     /// <summary>
@@ -178,6 +192,8 @@ public class ImageCapture : MonoBehaviour
         WWW www = new WWW(serverAddress);
         yield return www;
         DebugManager.Instance.PrintToInfoLog("Server Status-> " + (www.error == null ? www.text : " ERR :" + www.error));
+
+        DebugManager.Instance.PrintToRunningLog("Screen W:" + Screen.width + " H:" + Screen.height);
     }
 
     /// <summary>
@@ -189,9 +205,17 @@ public class ImageCapture : MonoBehaviour
         WWW www = new WWW(serverAddress + "/resp");
         yield return www;
 
+        if(www.error != null)
+        {
+            print(www.error);
+            yield break;
+        }
+
+        Matrix4x4 lastCameraToWorldMatrix = Matrix4x4.identity;
+        Matrix4x4 lastProjectionMatrix = Matrix4x4.identity;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
-        print("************  " + resp.recognizedObjects.Length);
-        GetComponent<ObjectLocator>().LocateInScene(resp, lastLocation, lastRotation);
+        print("Response Length: " + resp.recognizedObjects.Length);
+		objLocatorScript.LocateInScene(resp, lastCameraToWorldMatrix, lastProjectionMatrix);
     }
 
     /// <summary>
