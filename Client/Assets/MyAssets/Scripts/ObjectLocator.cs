@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class ObjectLocator : MonoBehaviour {
 
-    //[SerializeField] Camera secCam;
     [SerializeField] RawImage preview;
     [SerializeField] GameObject marker;
 
@@ -54,12 +53,6 @@ public class ObjectLocator : MonoBehaviour {
 
 	public void LocateInScene(ResponseStruct resp, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
     {
-        //Quaternion rotation = Quaternion.LookRotation(-cameraToWorldMatrix.GetColumn(2), cameraToWorldMatrix.GetColumn(1));
-
-        //secCam.transform.position = position;
-        //secCam.transform.rotation = rotation;
-        //secCam.projectionMatrix = projectionMatrix;
-
         foreach (ObjectRecognition o in resp.recognizedObjects)
         {
             StartCoroutine(DefineBoundary(o.type, (int) (o.details[0] * camResolutionWidth), (int)(o.details[2] * camResolutionWidth),
@@ -79,18 +72,14 @@ public class ObjectLocator : MonoBehaviour {
 
         Vector3 imagePosProjected = ((pixelPos * 2) - Vector2.one); // -1 to 1 space
         imagePosProjected.z = 1;
-        DebugManager.Instance.PrintToRunningLog("-1 to 1:" + imagePosProjected);
-        Vector3 cameraSpacePos = UnProjectVector(projectionMatrix, imagePosProjected);
 
-        //worldSpaceMultiplier
-        //Vector3 WorldSpaceRayPoint1 = cameraToWorldMatrix * new Vector4(0, 0, 0, 1); // camera location in world space
+        Vector3 cameraSpacePos = UnProjectVector(projectionMatrix, imagePosProjected);
         Vector3 worldSpaceRayPoint2 = cameraToWorldMatrix * cameraSpacePos; // ray point in world space
 
         DebugManager.Instance.PrintToRunningLog("point2:" + worldSpaceRayPoint2);
 
         DropMarker(camPosition, (worldSpaceRayPoint2));
-        DrawLineRenderer(camPosition, (worldSpaceRayPoint2) * 10);
-        DebugManager.Instance.PrintToRunningLog("world pos" + ((worldSpaceRayPoint2).normalized * 10));
+        //DrawLineRenderer(camPosition, worldSpaceRayPoint2);
     }
 
     public static Vector3 UnProjectVector(Matrix4x4 proj, Vector3 to)
@@ -104,27 +93,6 @@ public class ObjectLocator : MonoBehaviour {
         from.x = (to.x - (from.z * axsX.z)) / axsX.x;
         return from;
     }
-
-    //public void DropMarker(float x, float y, string type, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
-    //{
-    //    //Pixel positions : Unity starts from bottom left. CNN start from top left.
-    //    y = camResolutionWidth - y;
-
-    //    //a camera ray cast can be done and scaled linearly to find the best scaling factor
-        
-
-    //    //Vector3 poiPoint = new Vector3(x, y, 10); // point2D is a 2D vector in the RGB camera space;
-    //    //Matrix4x4 inverseMVP = (projectionMatrix * worldToCameraMatrix).inverse; // the projectionMatrix and worldToCameraMatrix are from the photoCapture information
-    //    //Vector2 poiPointInWorld = inverseMVP.MultiplyPoint3x4(poiPoint);
-
-
-    //    Vector3 objPosition = Camera.main.ScreenToWorldPoint(new Vector3(x, y ));
-    //    print(objPosition);
-
-    //    DrawLineRenderer(objPosition);
-
-    //    DebugManager.Instance.PrintToRunningLog("Pos:" + x + ", " + y + "\n" + objPosition);
-    //}
 
     void DropMarker(Vector3 origin, Vector3 direction)
     {
@@ -142,7 +110,8 @@ public class ObjectLocator : MonoBehaviour {
     void DrawLineRenderer(Vector3 from, Vector3 objPosition)
     {
         LineRenderer line = GetComponent<LineRenderer>();
-        line.SetPosition(0, from + new Vector3(0, 0.001f));
+        line.enabled = true;
+        line.SetPosition(0, from);
         line.SetPosition(1, objPosition);
     }
 }

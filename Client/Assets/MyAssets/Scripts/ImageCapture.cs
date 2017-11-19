@@ -19,10 +19,7 @@ public class ImageCapture : MonoBehaviour
     [SerializeField] Renderer quadRendererCustom;
     [SerializeField] string serverAddress;
     [SerializeField] string queryAPI;
-
-//    [SerializeField] Vector3 lastLocation = Vector3.zero;
-//    [SerializeField] Vector3 lastRotation = Vector3.zero;
-
+    
     /// <summary>
     /// Activate camera on app activation
     /// </summary>
@@ -86,9 +83,6 @@ public class ImageCapture : MonoBehaviour
     public void OnInputClicked()
     {
         CaptureImage();
-//        lastLocation = Camera.main.transform.position;
-//        lastRotation = Camera.main.transform.rotation.eulerAngles;
-//        DebugManager.Instance.PrintToRunningLog("Capture at: R:" + lastRotation + " P:" + lastLocation);
     }
     
     /// <summary>
@@ -124,13 +118,6 @@ public class ImageCapture : MonoBehaviour
 
             photoCaptureFrame.TryGetCameraToWorldMatrix(out cameraToWorldMatrix);
             photoCaptureFrame.TryGetProjectionMatrix(0, 5, out projectionMatrix);
-            Vector3 position = cameraToWorldMatrix.MultiplyPoint(Vector3.zero);
-            // Position the canvas object slightly in front
-            // of the real world web camera.
-            //Vector3 position = cameraToWorldMatrix.GetColumn(3) - cameraToWorldMatrix.GetColumn(2);
-			Quaternion rotation = Quaternion.LookRotation(-cameraToWorldMatrix.GetColumn(2), cameraToWorldMatrix.GetColumn(1));
-
-            DebugManager.Instance.PrintToRunningLog("R:" + rotation.eulerAngles + " P " + position );
 
             StartCoroutine(SendImageToServer(imageData, cameraToWorldMatrix, projectionMatrix));
         }
@@ -149,7 +136,6 @@ public class ImageCapture : MonoBehaviour
         String currentFileName = GenerateFileName();
         String filePath = Application.persistentDataPath + "/" + currentFileName;
         File.WriteAllBytes(filePath + ".jpg", imageData);
-        //DebugManager.Instance.PrintToInfoLog("Saved: " + filePath);
     }
 
     /// <summary>
