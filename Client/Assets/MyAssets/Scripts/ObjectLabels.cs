@@ -11,4 +11,9 @@ public class ObjectLabels : MonoBehaviour {
         transform.position = pos;
         this.label.text = label;
     }
+
+    void OnWillRenderObject()
+    {
+        label.transform.rotation = Camera.current.transform.rotation;
+    }
 }
