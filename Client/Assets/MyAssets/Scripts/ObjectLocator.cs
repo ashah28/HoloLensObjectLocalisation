@@ -8,6 +8,9 @@ public class ObjectLocator : MonoBehaviour {
     [SerializeField] RawImage preview;
     [SerializeField] GameObject marker;
 
+    [SerializeField] GameObject labelPrefab;
+    [SerializeField] Transform markerContainer;
+
     [SerializeField] int boundaryWidth;
 
     [SerializeField] Color[] colors;
@@ -51,19 +54,37 @@ public class ObjectLocator : MonoBehaviour {
         yield return new WaitForEndOfFrame();
     }
 
+    /// <summary>
+    /// Locate the object position in real world. Calls Dropmarker if hit otherwise ignores
+    /// </summary>
+    /// <param name="resp">The response structure</param>
+    /// <param name="cameraToWorldMatrix">cameraToWorldMatrix</param>
+    /// <param name="projectionMatrix">cameraProjectionMatrix</param>
 	public void LocateInScene(ResponseStruct resp, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
     {
         foreach (ObjectRecognition o in resp.recognizedObjects)
         {
             StartCoroutine(DefineBoundary(o.type, (int) (o.details[0] * camResolutionWidth), (int)(o.details[2] * camResolutionWidth),
                 (int)(o.details[1] * camResolutionHeight), (int)(o.details[3] * camResolutionHeight), o.score));
-            PixelToWorldPoint(new Vector2(o.details[0] + (o.details[2] - o.details[0]) / 2, 
+            Vector3? hitPoint = PixelToWorldPoint(new Vector2(o.details[0] + (o.details[2] - o.details[0]) / 2, 
                                         o.details[1] + (o.details[3] - o.details[1]) / 2),
                                 cameraToWorldMatrix, projectionMatrix);
+
+            if(hitPoint.HasValue)
+                DropMarker(hitPoint.Value, o.type);
+            else
+                DebugManager.Instance.PrintToRunningLog("No boundary found");
         }
     }
 
-    void PixelToWorldPoint(Vector2 pixelPos, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
+    /// <summary>
+    /// This is where the actual magic happens. Calculates the 3D direction where the object sits
+    /// </summary>
+    /// <param name="pixelPos">pixelPosition as given by CNN. Will be converted to Unity compatible</param>
+    /// <param name="cameraToWorldMatrix">cameraToWorldMatrix</param>
+    /// <param name="projectionMatrix">projectionMatrix</param>
+    /// <returns>Returns a nullable vector3 with position of the hit point if a collider found. Returns null if miss</returns>
+    Vector3? PixelToWorldPoint(Vector2 pixelPos, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
     {
         //Pixel positions : Unity starts from bottom left. CNN start from top left.
         pixelPos.y = 1 - pixelPos.y;
@@ -78,7 +99,7 @@ public class ObjectLocator : MonoBehaviour {
 
         DebugManager.Instance.PrintToRunningLog("point2:" + worldSpaceRayPoint2);
 
-        DropMarker(camPosition, (worldSpaceRayPoint2));
+        return RayCastHitPoint(camPosition, worldSpaceRayPoint2);
         //DrawLineRenderer(camPosition, worldSpaceRayPoint2);
     }
 
@@ -94,7 +115,13 @@ public class ObjectLocator : MonoBehaviour {
         return from;
     }
 
-    void DropMarker(Vector3 origin, Vector3 direction)
+    /// <summary>
+    /// Raycast towards the object to find a collider.
+    /// </summary>
+    /// <param name="origin">from</param>
+    /// <param name="direction">direction</param>
+    /// <returns>Returns a nullable vector3 with position of the hit point if a collider found. Returns null if miss</returns>
+    Vector3? RayCastHitPoint(Vector3 origin, Vector3 direction)
     {
         RaycastHit hit;
 
@@ -102,9 +129,19 @@ public class ObjectLocator : MonoBehaviour {
         {
             DebugManager.Instance.PrintToRunningLog("Found at:" + hit.distance + ":" + hit.point);
             marker.transform.position = hit.point;
+            return hit.point;
         }
         else
-            DebugManager.Instance.PrintToRunningLog("No boundary");
+        {            
+            return null;
+        }
+    }
+
+    public void DropMarker(Vector3 pos, string label)
+    {
+        GameObject go = GameObject.Instantiate(labelPrefab as Object, markerContainer) as GameObject;
+        //GameObject.Instantiate(labelPrefab as Object, pos, Camera.main.transform.rotation, markerContainer) as GameObject;
+        go.GetComponent<ObjectLabels>().SetLabel(pos, label);
     }
 
     void DrawLineRenderer(Vector3 from, Vector3 objPosition)

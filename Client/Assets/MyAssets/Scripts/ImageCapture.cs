@@ -202,6 +202,7 @@ public class ImageCapture : MonoBehaviour
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
         print("Response Length: " + resp.recognizedObjects.Length);
 		objLocatorScript.LocateInScene(resp, lastCameraToWorldMatrix, lastProjectionMatrix);
+        objLocatorScript.DropMarker(new Vector3(0, 0.5f, 5), "sample");
     }
 
     /// <summary>
