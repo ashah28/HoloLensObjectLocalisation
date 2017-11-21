@@ -9,7 +9,9 @@ public class ObjectLocator : MonoBehaviour {
     [SerializeField] GameObject marker;
 
     [SerializeField] GameObject labelPrefab;
-    [SerializeField] Transform markerContainer;
+    [SerializeField] Transform markersParent;
+
+    [SerializeField] List<Transform> markers;
 
     [SerializeField] int boundaryWidth;
 
@@ -71,7 +73,7 @@ public class ObjectLocator : MonoBehaviour {
                                 cameraToWorldMatrix, projectionMatrix);
 
             if(hitPoint.HasValue)
-                DropMarker(hitPoint.Value, o.type);
+                DropMarker(hitPoint.Value, o);
             else
                 DebugManager.Instance.PrintToRunningLog("No boundary found");
         }
@@ -97,7 +99,7 @@ public class ObjectLocator : MonoBehaviour {
         Vector3 cameraSpacePos = UnProjectVector(projectionMatrix, imagePosProjected);
         Vector3 worldSpaceRayPoint2 = cameraToWorldMatrix * cameraSpacePos; // ray point in world space
 
-        DebugManager.Instance.PrintToRunningLog("point2:" + worldSpaceRayPoint2);
+        //DebugManager.Instance.PrintToRunningLog("point2:" + worldSpaceRayPoint2);
 
         return RayCastHitPoint(camPosition, worldSpaceRayPoint2);
         //DrawLineRenderer(camPosition, worldSpaceRayPoint2);
@@ -127,7 +129,7 @@ public class ObjectLocator : MonoBehaviour {
 
         if (Physics.Raycast(origin, direction, out hit, 100))
         {
-            DebugManager.Instance.PrintToRunningLog("Found at:" + hit.distance + ":" + hit.point);
+            //DebugManager.Instance.PrintToRunningLog("Found at:" + hit.distance + ":" + hit.point);
             marker.transform.position = hit.point;
             return hit.point;
         }
@@ -137,11 +139,13 @@ public class ObjectLocator : MonoBehaviour {
         }
     }
 
-    public void DropMarker(Vector3 pos, string label)
+    public void DropMarker(Vector3 pos, ObjectRecognition obj)
     {
-        GameObject go = GameObject.Instantiate(labelPrefab as Object, markerContainer) as GameObject;
+        GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
         //GameObject.Instantiate(labelPrefab as Object, pos, Camera.main.transform.rotation, markerContainer) as GameObject;
-        go.GetComponent<ObjectLabels>().SetLabel(pos, label);
+        go.GetComponent<ObjectLabels>().SetLabel(pos, obj.type, obj.type + ":" + obj.score.ToString("0.###"));
+
+        markers.Add(go.transform);
     }
 
     void DrawLineRenderer(Vector3 from, Vector3 objPosition)

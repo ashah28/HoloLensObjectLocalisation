@@ -177,7 +177,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46dced15275dcfe4d8fe3762c1b71a3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 102790374851560716}
+  labelMesh: {fileID: 102790374851560716}
+  type: 
 --- !u!135 &135413852182161016
 SphereCollider:
   m_ObjectHideFlags: 1

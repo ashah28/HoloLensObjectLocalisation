@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class ObjectLabels : MonoBehaviour {
 
-    [SerializeField] TextMesh label;
+    [SerializeField] TextMesh labelMesh;
+    [SerializeField] string type;
 
-    public void SetLabel(Vector3 pos, string label)
+    public void SetLabel(Vector3 pos, string type, string label)
     {
         transform.position = pos;
-        this.label.text = label;
+        this.labelMesh.text = label;
+        this.type = type;
     }
 
     void OnWillRenderObject()
     {
-        label.transform.rotation = Camera.current.transform.rotation;
+        labelMesh.transform.rotation = Camera.current.transform.rotation;
     }
 }
