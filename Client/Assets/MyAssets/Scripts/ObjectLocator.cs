@@ -64,7 +64,7 @@ public class ObjectLocator : MonoBehaviour {
     /// <param name="projectionMatrix">cameraProjectionMatrix</param>
 	public void LocateInScene(ResponseStruct resp, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
     {
-        foreach (ObjectRecognition o in resp.recognizedObjects)
+        foreach (RecognisedObject o in resp.recognizedObjects)
         {
             StartCoroutine(DefineBoundary(o.type, (int) (o.details[0] * camResolutionWidth), (int)(o.details[2] * camResolutionWidth),
                 (int)(o.details[1] * camResolutionHeight), (int)(o.details[3] * camResolutionHeight), o.score));
@@ -139,7 +139,7 @@ public class ObjectLocator : MonoBehaviour {
         }
     }
 
-    public void DropMarker(Vector3 pos, ObjectRecognition obj)
+    public void DropMarker(Vector3 pos, RecognisedObject obj)
     {
         GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
         //GameObject.Instantiate(labelPrefab as Object, pos, Camera.main.transform.rotation, markerContainer) as GameObject;

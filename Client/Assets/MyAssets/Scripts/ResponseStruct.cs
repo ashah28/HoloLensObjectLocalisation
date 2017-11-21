@@ -5,11 +5,11 @@ using System;
 
 [Serializable]
 public class ResponseStruct {
-    public ObjectRecognition[] recognizedObjects;
+    public RecognisedObject[] recognizedObjects;
 }
 
 [Serializable]
-public class ObjectRecognition
+public class RecognisedObject
 {
     public string type;
     public float[] details;

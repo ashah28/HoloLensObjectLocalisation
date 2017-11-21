@@ -149,12 +149,12 @@ public class ImageCapture : MonoBehaviour
         form.AddBinaryData("image", imageData, GenerateFileName() + ".jpg", "image/jpeg");
         DebugManager.Instance.PrintToInfoLog("Sending request of " + (imageData.Length / 1024) + "kBs");
         WWW www = new WWW(serverAddress + queryAPI, form);
-        while(www.uploadProgress != 1)
-        {            
-            DebugManager.Instance.PrintToRunningLog("Upload %:" + (www.uploadProgress * 100).ToString("00.00"));
-            yield return new WaitForSeconds(1.5f);
-        }
-        DebugManager.Instance.PrintToRunningLog("Upload complete");
+        //while(www.uploadProgress != 1)
+        //{            
+        //    DebugManager.Instance.PrintToRunningLog("Upload %:" + (www.uploadProgress * 100).ToString("00.00"));
+        //    yield return new WaitForSeconds(0.5f);
+        //}
+        //DebugManager.Instance.PrintToRunningLog("Upload complete");
         yield return www;
 
         print(www.text);
