@@ -11,7 +11,7 @@ public class ObjectLocator : MonoBehaviour {
     [SerializeField] GameObject labelPrefab;
     [SerializeField] Transform markersParent;
 
-    [SerializeField] List<Transform> markers;
+    [SerializeField] List<ObjectMarker> markers;
 
     [SerializeField] int boundaryWidth;
 
@@ -139,13 +139,48 @@ public class ObjectLocator : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// Drops the label and the marker at the given position
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="obj"></param>
     public void DropMarker(Vector3 pos, RecognisedObject obj)
     {
-        GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
-        //GameObject.Instantiate(labelPrefab as Object, pos, Camera.main.transform.rotation, markerContainer) as GameObject;
-        go.GetComponent<ObjectLabels>().SetLabel(pos, obj.type, obj.type + ":" + obj.score.ToString("0.###"));
+        if (IsOverlappingSimilarMarker(pos, obj.type))
+        {
+            DebugManager.Instance.PrintToRunningLog("Similar marker: " + obj.type);
+        }
+        else
+        {
+            GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
+            //GameObject.Instantiate(labelPrefab as Object, pos, Camera.main.transform.rotation, markerContainer) as GameObject;
+            ObjectMarker label = go.GetComponent<ObjectMarker>();
+            label.SetLabel(pos, obj.type, obj.type + ":" + obj.score.ToString("0.###"));
 
-        markers.Add(go.transform);
+            markers.Add(label);
+        }
+    }
+
+    bool IsOverlappingSimilarMarker(Vector3 pos, string type)
+    {
+        Vector3 offset;
+        DebugManager.Instance.PrintToRunningLog("Markers in world:" + markers.Count);
+        foreach (ObjectMarker t in markers)
+        {
+            if (t.type == type)
+            {
+                offset = t.transform.position - pos;
+                DebugManager.Instance.PrintToRunningLog(offset.sqrMagnitude.ToString() + type);
+
+                if (offset.sqrMagnitude < 0.1f)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     void DrawLineRenderer(Vector3 from, Vector3 objPosition)

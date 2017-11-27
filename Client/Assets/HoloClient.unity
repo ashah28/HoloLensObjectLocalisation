@@ -412,6 +412,7 @@ MonoBehaviour:
   quadRendererCustom: {fileID: 1424800719}
   serverAddress: http://10.208.17.46:5000
   queryAPI: /queryimg
+  scanRate: 3
 --- !u!4 &1542775321
 Transform:
   m_ObjectHideFlags: 0
@@ -443,7 +444,7 @@ MonoBehaviour:
     type: 2}
   markersParent: {fileID: 0}
   markers: []
-  boundaryWidth: 7
+  boundaryWidth: 3
   colors:
   - {r: 0.20847748, g: 1, b: 0.11764705, a: 1}
   - {r: 0.6965513, g: 0, b: 1, a: 1}

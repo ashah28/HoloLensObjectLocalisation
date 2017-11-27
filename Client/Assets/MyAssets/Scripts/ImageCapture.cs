@@ -19,7 +19,12 @@ public class ImageCapture : MonoBehaviour
     [SerializeField] Renderer quadRendererCustom;
     [SerializeField] string serverAddress;
     [SerializeField] string queryAPI;
-    
+
+    [SerializeField] float scanRate;
+
+    Boolean capturingImages;
+    Boolean lastResponseRecieved = true;
+
     /// <summary>
     /// Activate camera on app activation
     /// </summary>
@@ -30,7 +35,7 @@ public class ImageCapture : MonoBehaviour
 
         if (!Application.isEditor)
         {
-            Resolution cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
+            Resolution cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).Last();
             targetTexture = new Texture2D(cameraResolution.width, cameraResolution.height);
 
             // Create a PhotoCapture object
@@ -82,7 +87,13 @@ public class ImageCapture : MonoBehaviour
     /// </summary>
     public void OnInputClicked()
     {
-        CaptureImage();
+        capturingImages = !capturingImages;
+
+        if (capturingImages)
+            InvokeRepeating("CaptureImage", scanRate, scanRate);
+        else
+            CancelInvoke("CaptureImage");
+        DebugManager.Instance.PrintToRunningLog("Capturing images:" + capturingImages);
     }
     
     /// <summary>
@@ -90,8 +101,16 @@ public class ImageCapture : MonoBehaviour
     /// </summary>
     public void CaptureImage()
     {
-        if(!Application.isEditor)
-            photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
+        if (!Application.isEditor)
+            if (lastResponseRecieved)
+            {
+                lastResponseRecieved = false;
+                photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
+            }
+            else
+                DebugManager.Instance.PrintToRunningLog("Skipping update...");
+        else
+            print("Fake capture in editor");
     }
 
     /// <summary>
@@ -111,7 +130,7 @@ public class ImageCapture : MonoBehaviour
         try
         {
             byte[] imageData = targetTexture.EncodeToJPG(90);
-            WriteImageToDisk(imageData);
+            //WriteImageToDisk(imageData);
 
             Matrix4x4 cameraToWorldMatrix;
             Matrix4x4 projectionMatrix;
@@ -158,10 +177,12 @@ public class ImageCapture : MonoBehaviour
         yield return www;
 
         print(www.text);
-
+        imageData = null;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
 
 		objLocatorScript.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
+
+        lastResponseRecieved = true;
 
         if (www.error != null)
         {

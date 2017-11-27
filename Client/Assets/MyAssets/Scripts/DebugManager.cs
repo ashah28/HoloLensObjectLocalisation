@@ -13,7 +13,8 @@ public class DebugManager : Singleton<DebugManager> {
     Text infoLog;
     
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         if (!runningLog)
             Debug.LogError("Visual log not found");
 	}

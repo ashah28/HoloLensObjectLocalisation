@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectLabels : MonoBehaviour {
+public class ObjectMarker : MonoBehaviour {
 
     [SerializeField] TextMesh labelMesh;
-    [SerializeField] string type;
+    public string type;
 
 
     /// <summary>
