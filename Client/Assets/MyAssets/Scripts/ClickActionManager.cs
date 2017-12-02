@@ -44,15 +44,9 @@ public class ClickActionManager : MonoBehaviour {
     /// </summary>
     void Click()
     {
-        DebugManager.Instance.PrintToRunningLog(GazeManager.Instance.IsGazingAtObject.ToString());
-        if (GazeManager.Instance.IsGazingAtObject)
-            DeleteObject(GazeManager.Instance.HitObject);
+        if (GazeManager.Instance.IsGazingAtObject && GazeManager.Instance.HitObject.GetComponent<ObjectMarker>())
+            ObjectLocator.Instance.DeleteObject(GazeManager.Instance.HitObject);
         else
             ImageCapture.Instance.StartStopCapturing();
-    }
-
-    void DeleteObject(GameObject obj)
-    {
-        DebugManager.Instance.PrintToRunningLog("Clicked on" + obj.name);
     }
 }

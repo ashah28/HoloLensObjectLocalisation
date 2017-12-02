@@ -193,6 +193,19 @@ public class ObjectLocator : Singleton<ObjectLocator> {
         markers.Clear();
     }
 
+    public void DeleteObject(GameObject obj)
+    {
+        print(obj);
+        if (obj == lastMarkerPlacement)
+            return;
+
+        DebugManager.Instance.PrintToRunningLog("Clicked on: " + obj.name);
+        ObjectMarker marker = obj.GetComponent<ObjectMarker>();
+        markers.Remove(marker);
+
+        Destroy(marker.gameObject);
+    }
+
     void DrawLineRenderer(Vector3 from, Vector3 objPosition)
     {
         LineRenderer line = GetComponent<LineRenderer>();
