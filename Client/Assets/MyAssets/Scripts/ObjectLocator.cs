@@ -181,15 +181,14 @@ public class ObjectLocator : Singleton<ObjectLocator> {
                 }
             }
         }
-
         return false;
     }
 
     public void ClearMarkers()
     {
-        foreach (Transform child in markersParent)
+        foreach(ObjectMarker om in markers)
         {
-            GameObject.Destroy(child.gameObject);
+            GameObject.Destroy(om.gameObject);
         }
         markers.Clear();
     }
