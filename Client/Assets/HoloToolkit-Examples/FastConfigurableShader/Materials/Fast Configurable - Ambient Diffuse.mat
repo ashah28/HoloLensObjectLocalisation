@@ -9,7 +9,7 @@ Material:
   m_Name: Fast Configurable - Ambient Diffuse
   m_Shader: {fileID: 4800000, guid: f1f3948b20c230044bda31b620ddd37f, type: 3}
   m_ShaderKeywords: _EMISSION _MAINTEX_OFFSET_ON _MAINTEX_SCALE_ON _MainTex_ON _MainTex_SCALE_ON
-    _USEMAINCOLOR_ON _USEMAINTEX_ON _USESPECULAR_ON
+    _USEAMBIENT_ON _USEMAINTEX_ON _USESPECULAR_ON
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -112,14 +112,14 @@ Material:
     - _SpecularScale: 1.73
     - _SrcBlend: 5
     - _UVSec: 0
-    - _UseAmbient: 0
+    - _UseAmbient: 1
     - _UseBumpMap: 0
     - _UseDiffuse: 0
     - _UseEmissionColor: 0
     - _UseEmissionMap: 0
     - _UseEmissionTex: 0
     - _UseGlossMap: 0
-    - _UseMainColor: 1
+    - _UseMainColor: 0
     - _UseMainTex: 1
     - _UseOcclusionMap: 0
     - _UseReflections: 0
