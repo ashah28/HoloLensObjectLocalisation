@@ -98,8 +98,16 @@ public class ImageCapture :  Singleton<ImageCapture>
         if (!Application.isEditor)
             if (lastResponseRecieved)
             {
+                DebugManager.Instance.PrintToInfoLog("Proc started.");
                 lastResponseRecieved = false;
-                photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
+                try
+                {
+                    photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
+                }
+                catch (Exception e)
+                {
+                    DebugManager.Instance.PrintToInfoLog("Error during TakePhotoAsync:" + e.ToString());
+                }
             }
             else
                 DebugManager.Instance.PrintToRunningLog("Skipping update...");
@@ -134,7 +142,7 @@ public class ImageCapture :  Singleton<ImageCapture>
         }
         catch (Exception e)
         {
-            DebugManager.Instance.PrintToInfoLog("Writing to disk failed:" + e.ToString());
+            DebugManager.Instance.PrintToInfoLog("Error in OnCapturedPhotoToMemory:" + e.ToString());
         }
     }
 
@@ -168,18 +176,19 @@ public class ImageCapture :  Singleton<ImageCapture>
         //DebugManager.Instance.PrintToRunningLog("Upload complete");
         yield return www;
 
-        print(www.text);
+        if (www.error != null)
+        {
+            DebugManager.Instance.PrintToInfoLog("Server-> " + www.error);
+            yield break;
+        }
+
         imageData = null;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
 
         ObjectLocator.Instance.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
 
         lastResponseRecieved = true;
-
-        if (www.error != null)
-        {
-            DebugManager.Instance.PrintToInfoLog("Server-> " + www.error);
-        }
+        DebugManager.Instance.PrintToInfoLog("Last response analysed.");
     }
 
     /// <summary>
