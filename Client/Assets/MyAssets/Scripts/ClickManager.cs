@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using HoloToolkit.Unity.InputModule;
 
-public class ClickManager : MonoBehaviour {
+public class ClickActionManager : MonoBehaviour {
 
     float lastClickTimestamp;
 
@@ -10,12 +11,12 @@ public class ClickManager : MonoBehaviour {
 
     // Use this for initialization
     void OnEnable () {
-        HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate += OnInputClicked;
+        InputManager.holoClickDelegate += OnInputClicked;
     }
 
     private void OnDisable()
     {
-        HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate -= OnInputClicked;
+        InputManager.holoClickDelegate -= OnInputClicked;
     }
 
     /// <summary>
@@ -43,6 +44,15 @@ public class ClickManager : MonoBehaviour {
     /// </summary>
     void Click()
     {
-        ImageCapture.Instance.StartStopCapturing();
+        DebugManager.Instance.PrintToRunningLog(GazeManager.Instance.IsGazingAtObject.ToString());
+        if (GazeManager.Instance.IsGazingAtObject)
+            DeleteObject(GazeManager.Instance.HitObject);
+        else
+            ImageCapture.Instance.StartStopCapturing();
+    }
+
+    void DeleteObject(GameObject obj)
+    {
+        DebugManager.Instance.PrintToRunningLog("Clicked on" + obj.name);
     }
 }
