@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ObjectLocator : MonoBehaviour {
+using HoloToolkit.Unity;
+
+public class ObjectLocator : Singleton<ObjectLocator> {
 
     [SerializeField] RawImage preview;
     [SerializeField] GameObject lastMarkerPlacement;

@@ -6,14 +6,15 @@ using System;
 using UnityEngine.UI;
 using System.IO;
 
+using HoloToolkit.Unity;
+
 /// <summary>
 /// This class handles image capturing and sending the captured image to the web server as a post form call
 /// </summary>
-public class ImageCapture : MonoBehaviour
+public class ImageCapture :  Singleton<ImageCapture>
 {
     PhotoCapture photoCaptureObject = null;
     Texture2D targetTexture = null;
-    ObjectLocator objectLocatorScript;
 
     [SerializeField] RawImage previewImage;
     
@@ -25,14 +26,11 @@ public class ImageCapture : MonoBehaviour
     Boolean capturingImages;
     Boolean lastResponseRecieved = true;
 
-    float lastClickTimestamp;
-
     /// <summary>
     /// Activate camera on app activation
     /// </summary>
     void OnEnable()
     {
-        objectLocatorScript = GetComponent<ObjectLocator>();
         StartCoroutine(CheckServerStatus());
 
         if (!Application.isEditor)
@@ -57,17 +55,16 @@ public class ImageCapture : MonoBehaviour
                     photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
                 });
 
-                objectLocatorScript.camResolutionWidth = cameraResolution.width;
-                objectLocatorScript.camResolutionHeight = cameraResolution.height;
+                ObjectLocator.Instance.camResolutionWidth = cameraResolution.width;
+                ObjectLocator.Instance.camResolutionHeight = cameraResolution.height;
             });
         }
         else
         {
-            objectLocatorScript.camResolutionWidth = previewImage.texture.width;
-            objectLocatorScript.camResolutionHeight = previewImage.texture.height;
+            ObjectLocator.Instance.camResolutionWidth = previewImage.texture.width;
+            ObjectLocator.Instance.camResolutionHeight = previewImage.texture.height;
             StartCoroutine(ParseSampleResponse());
         }
-        HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate += OnInputClicked;
     }
 
     /// <summary>
@@ -76,34 +73,13 @@ public class ImageCapture : MonoBehaviour
     private void OnDisable()
     {
         if(photoCaptureObject != null)
-            photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);
-
-        HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate -= OnInputClicked;
+            photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);        
 
         if (DebugManager.Instance)
             DebugManager.Instance.PrintToRunningLog("Cam disabled");
     }
-
-    /// <summary>
-    /// Called whenever a click is registered on Hololens. Blocked by nothing! Pure, simple, holo click...
-    /// </summary>
-    public void OnInputClicked()
-    {
-        //single click
-        if(lastClickTimestamp - Time.timeSinceLevelLoad > 0.5f)
-        {
-            StartStopCapturing();
-        }
-        //for now considering everything as double click
-        else
-        {
-            objectLocatorScript.ClearMarkers();
-        }
-
-        lastClickTimestamp = Time.timeSinceLevelLoad;
-    }
-
-    void StartStopCapturing()
+    
+    public void StartStopCapturing()
     {
         capturingImages = !capturingImages;
 
@@ -196,7 +172,7 @@ public class ImageCapture : MonoBehaviour
         imageData = null;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
 
-		objectLocatorScript.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
+        ObjectLocator.Instance.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
 
         lastResponseRecieved = true;
 
@@ -238,8 +214,8 @@ public class ImageCapture : MonoBehaviour
         Matrix4x4 lastProjectionMatrix = Matrix4x4.identity;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
         print("Response Length: " + resp.recognizedObjects.Length);
-		objectLocatorScript.LocateInScene(resp, lastCameraToWorldMatrix, lastProjectionMatrix);
-        objectLocatorScript.DropMarker(new Vector3(0, 0.5f, 5), resp.recognizedObjects[0]);
+        ObjectLocator.Instance.LocateInScene(resp, lastCameraToWorldMatrix, lastProjectionMatrix);
+        ObjectLocator.Instance.DropMarker(new Vector3(0, 0.5f, 5), resp.recognizedObjects[0]);
     }
 
     /// <summary>
