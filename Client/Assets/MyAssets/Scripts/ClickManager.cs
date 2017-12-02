@@ -6,6 +6,8 @@ public class ClickManager : MonoBehaviour {
 
     float lastClickTimestamp;
 
+    [SerializeField] float doubleClickDuration = 0.3f;
+
     // Use this for initialization
     void OnEnable () {
         HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate += OnInputClicked;
@@ -21,17 +23,26 @@ public class ClickManager : MonoBehaviour {
     /// </summary>
     public void OnInputClicked()
     {
-        //single click
-        if (lastClickTimestamp - Time.timeSinceLevelLoad > 0.5f)
+        //double click
+        if (IsInvoking("Click"))
         {
-            ImageCapture.Instance.StartStopCapturing();
+            CancelInvoke("Click");
+            ObjectLocator.Instance.ClearMarkers();
+
+            print("Double click");
         }
-        //for now considering everything as double click
+        //count for single
         else
         {
-            ObjectLocator.Instance.ClearMarkers();
+            Invoke("Click", doubleClickDuration);
         }
+    }
 
-        lastClickTimestamp = Time.timeSinceLevelLoad;
+    /// <summary>
+    /// Trigger a single click
+    /// </summary>
+    void Click()
+    {
+        ImageCapture.Instance.StartStopCapturing();
     }
 }
