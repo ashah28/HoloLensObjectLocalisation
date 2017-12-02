@@ -13,10 +13,10 @@ public class ImageCapture : MonoBehaviour
 {
     PhotoCapture photoCaptureObject = null;
     Texture2D targetTexture = null;
-    ObjectLocator objLocatorScript;
+    ObjectLocator objectLocatorScript;
 
     [SerializeField] RawImage previewImage;
-    [SerializeField] Renderer quadRendererCustom;
+    
     [SerializeField] string serverAddress;
     [SerializeField] string queryAPI;
 
@@ -25,12 +25,14 @@ public class ImageCapture : MonoBehaviour
     Boolean capturingImages;
     Boolean lastResponseRecieved = true;
 
+    float lastClickTimestamp;
+
     /// <summary>
     /// Activate camera on app activation
     /// </summary>
     void OnEnable()
     {
-        objLocatorScript = GetComponent<ObjectLocator>();
+        objectLocatorScript = GetComponent<ObjectLocator>();
         StartCoroutine(CheckServerStatus());
 
         if (!Application.isEditor)
@@ -55,14 +57,14 @@ public class ImageCapture : MonoBehaviour
                     photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
                 });
 
-                objLocatorScript.camResolutionWidth = cameraResolution.width;
-                objLocatorScript.camResolutionHeight = cameraResolution.height;
+                objectLocatorScript.camResolutionWidth = cameraResolution.width;
+                objectLocatorScript.camResolutionHeight = cameraResolution.height;
             });
         }
         else
         {
-            objLocatorScript.camResolutionWidth = previewImage.texture.width;
-            objLocatorScript.camResolutionHeight = previewImage.texture.height;
+            objectLocatorScript.camResolutionWidth = previewImage.texture.width;
+            objectLocatorScript.camResolutionHeight = previewImage.texture.height;
             StartCoroutine(ParseSampleResponse());
         }
         HoloToolkit.Unity.InputModule.InputManager.holoClickDelegate += OnInputClicked;
@@ -86,6 +88,22 @@ public class ImageCapture : MonoBehaviour
     /// Called whenever a click is registered on Hololens. Blocked by nothing! Pure, simple, holo click...
     /// </summary>
     public void OnInputClicked()
+    {
+        //single click
+        if(lastClickTimestamp - Time.timeSinceLevelLoad > 0.5f)
+        {
+            StartStopCapturing();
+        }
+        //for now considering everything as double click
+        else
+        {
+            objectLocatorScript.ClearMarkers();
+        }
+
+        lastClickTimestamp = Time.timeSinceLevelLoad;
+    }
+
+    void StartStopCapturing()
     {
         capturingImages = !capturingImages;
 
@@ -123,8 +141,6 @@ public class ImageCapture : MonoBehaviour
         // Copy the raw image data into the target texture
         photoCaptureFrame.UploadImageDataToTexture(targetTexture);
 
-        //Set texture to renderer. Probably need to do just once... WIP
-        quadRendererCustom.material.mainTexture = targetTexture;
         previewImage.texture = targetTexture;
 
         try
@@ -180,7 +196,7 @@ public class ImageCapture : MonoBehaviour
         imageData = null;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
 
-		objLocatorScript.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
+		objectLocatorScript.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
 
         lastResponseRecieved = true;
 
@@ -222,8 +238,8 @@ public class ImageCapture : MonoBehaviour
         Matrix4x4 lastProjectionMatrix = Matrix4x4.identity;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
         print("Response Length: " + resp.recognizedObjects.Length);
-		objLocatorScript.LocateInScene(resp, lastCameraToWorldMatrix, lastProjectionMatrix);
-        objLocatorScript.DropMarker(new Vector3(0, 0.5f, 5), resp.recognizedObjects[0]);
+		objectLocatorScript.LocateInScene(resp, lastCameraToWorldMatrix, lastProjectionMatrix);
+        objectLocatorScript.DropMarker(new Vector3(0, 0.5f, 5), resp.recognizedObjects[0]);
     }
 
     /// <summary>

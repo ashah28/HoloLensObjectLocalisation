@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ObjectLocator : MonoBehaviour {
 
     [SerializeField] RawImage preview;
-    [SerializeField] GameObject marker;
+    [SerializeField] GameObject lastMarkerPlacement;
 
     [SerializeField] GameObject labelPrefab;
     [SerializeField] Transform markersParent;
@@ -66,8 +66,8 @@ public class ObjectLocator : MonoBehaviour {
     {
         foreach (RecognisedObject o in resp.recognizedObjects)
         {
-            StartCoroutine(DefineBoundary(o.type, (int) (o.details[0] * camResolutionWidth), (int)(o.details[2] * camResolutionWidth),
-                (int)(o.details[1] * camResolutionHeight), (int)(o.details[3] * camResolutionHeight), o.score));
+            //StartCoroutine(DefineBoundary(o.type, (int) (o.details[0] * camResolutionWidth), (int)(o.details[2] * camResolutionWidth),
+            //    (int)(o.details[1] * camResolutionHeight), (int)(o.details[3] * camResolutionHeight), o.score));
             Vector3? hitPoint = PixelToWorldPoint(new Vector2(o.details[0] + (o.details[2] - o.details[0]) / 2, 
                                         o.details[1] + (o.details[3] - o.details[1]) / 2),
                                 cameraToWorldMatrix, projectionMatrix);
@@ -130,7 +130,7 @@ public class ObjectLocator : MonoBehaviour {
         if (Physics.Raycast(origin, direction, out hit, 100))
         {
             //DebugManager.Instance.PrintToRunningLog("Found at:" + hit.distance + ":" + hit.point);
-            marker.transform.position = hit.point;
+            lastMarkerPlacement.transform.position = hit.point;
             return hit.point;
         }
         else
@@ -156,7 +156,7 @@ public class ObjectLocator : MonoBehaviour {
             GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
             //GameObject.Instantiate(labelPrefab as Object, pos, Camera.main.transform.rotation, markerContainer) as GameObject;
             ObjectMarker label = go.GetComponent<ObjectMarker>();
-            label.SetLabel(pos, obj.type, obj.type + ":" + obj.score.ToString("0.###"));
+            label.SetLabel(pos, obj.type, obj.type + ":" + (obj.score * 100).ToString("00.0"));
 
             markers.Add(label);
         }
@@ -181,6 +181,15 @@ public class ObjectLocator : MonoBehaviour {
         }
 
         return false;
+    }
+
+    public void ClearMarkers()
+    {
+        foreach (Transform child in markersParent)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        markers.Clear();
     }
 
     void DrawLineRenderer(Vector3 from, Vector3 objPosition)

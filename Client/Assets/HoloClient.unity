@@ -409,8 +409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   previewImage: {fileID: 90822368}
-  quadRendererCustom: {fileID: 1424800719}
-  serverAddress: http://10.208.17.46:5000
+  serverAddress: http://10.208.19.44:5000
   queryAPI: /queryimg
   scanRate: 3
 --- !u!4 &1542775321
@@ -439,7 +438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preview: {fileID: 90822368}
-  marker: {fileID: 2137589891}
+  lastMarkerPlacement: {fileID: 0}
   labelPrefab: {fileID: 1898281520584054, guid: 104e063868982bd4683843353c2ab3f3,
     type: 2}
   markersParent: {fileID: 0}

@@ -517,7 +517,7 @@ PlayerSettings:
   metroCertificateNotAfter: 8060b2291d41d401
   metroApplicationDescription: HoloLensClient
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: HoloLensClient
   metroCommandLineArgsFile: 
   metroTileShowName: 0
   metroMediumTileShowName: 0
