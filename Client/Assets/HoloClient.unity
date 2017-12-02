@@ -412,7 +412,7 @@ MonoBehaviour:
   previewImage: {fileID: 90822368}
   serverAddress: http://10.208.19.44:5000
   queryAPI: /queryimg
-  scanRate: 3
+  scanRate: 1.5
 --- !u!4 &1542775321
 Transform:
   m_ObjectHideFlags: 0
@@ -669,6 +669,31 @@ Prefab:
         type: 2}
       propertyPath: m_Color.b
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 223070611765742588, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
+        type: 2}
+      propertyPath: m_PixelPerfect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224800970160444602, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 896
+      objectReference: {fileID: 0}
+    - target: {fileID: 224800970160444602, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 504
+      objectReference: {fileID: 0}
+    - target: {fileID: 224800970160444602, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224800970160444602, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -246.6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cd7a00f6a6e1a2c4089fce3144b807cb, type: 2}
@@ -1010,7 +1035,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 8c06d86b8f42c48419a034ffcea337b8, type: 2}
+  - {fileID: 2100000, guid: cb026e049ad35a74fb8a02a2f13a9741, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
