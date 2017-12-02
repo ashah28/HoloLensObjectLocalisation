@@ -9,11 +9,13 @@ Material:
   m_Name: Fast Configurable - Ambient Diffuse
   m_Shader: {fileID: 4800000, guid: f1f3948b20c230044bda31b620ddd37f, type: 3}
   m_ShaderKeywords: _EMISSION _MAINTEX_OFFSET_ON _MAINTEX_SCALE_ON _MainTex_ON _MainTex_SCALE_ON
-    _USEAMBIENT_ON _USEDIFFUSE_ON _USEMAINTEX_ON _USESPECULAR_ON
+    _USEMAINCOLOR_ON _USEMAINTEX_ON _USESPECULAR_ON
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -85,7 +87,7 @@ Material:
     - _Cull: 2
     - _Cutoff: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
+    - _DstBlend: 10
     - _ForcePerPixel: 0
     - _Gloss: 2
     - _GlossAmount: 0.53
@@ -95,7 +97,7 @@ Material:
     - _MainTex_OFFSET: 0
     - _MainTex_SCALE: 1
     - _Metallic: 0
-    - _Mode: 0
+    - _Mode: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ReflectionScale: 2
@@ -108,16 +110,16 @@ Material:
     - _SpecularPower: 40.4
     - _SpecularPowerAmount: 20.1
     - _SpecularScale: 1.73
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _UVSec: 0
-    - _UseAmbient: 1
+    - _UseAmbient: 0
     - _UseBumpMap: 0
-    - _UseDiffuse: 1
+    - _UseDiffuse: 0
     - _UseEmissionColor: 0
     - _UseEmissionMap: 0
     - _UseEmissionTex: 0
     - _UseGlossMap: 0
-    - _UseMainColor: 0
+    - _UseMainColor: 1
     - _UseMainTex: 1
     - _UseOcclusionMap: 0
     - _UseReflections: 0
@@ -131,7 +133,7 @@ Material:
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 0.39310342, b: 0, a: 1}
+    - _Color: {r: 0.039857987, g: 0, b: 0.04411763, a: 1}
     - _EmissionColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
