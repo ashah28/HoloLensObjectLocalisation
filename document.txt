@@ -1,1 +1,4 @@
-Image/Holoscreen = 2.5 ~~ 2.3 after repeated experiments
+Image --> Holoscreen = 2.5 ~~ 2.3 secs, after repeated experiments
+
+.net scripting backend
+x86 architecture
