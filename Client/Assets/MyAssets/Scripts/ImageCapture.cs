@@ -32,6 +32,7 @@ public class ImageCapture :  Singleton<ImageCapture>
     void OnEnable()
     {
         StartCoroutine(CheckServerStatus());
+        StartCoroutine(FetchSettings());
 
         if (!Application.isEditor)
         {
@@ -202,6 +203,18 @@ public class ImageCapture :  Singleton<ImageCapture>
         DebugManager.Instance.PrintToInfoLog("Server Status-> " + (www.error == null ? www.text : " ERR :" + www.error));
 
         DebugManager.Instance.PrintToRunningLog("Screen W:" + Screen.width + " H:" + Screen.height);
+    }
+
+    /// <summary>
+    /// Fetches settings dynamically on each load
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator FetchSettings()
+    {
+        WWW www = new WWW(serverAddress + "/settings");
+        yield return www;
+        
+        SettingsJSON settings = JsonUtility.FromJson<SettingsJSON>(www.text);
     }
 
     /// <summary>
