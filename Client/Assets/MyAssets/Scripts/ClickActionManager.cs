@@ -48,6 +48,11 @@ public class ClickActionManager : MonoBehaviour {
         if (GazeManager.Instance.IsGazingAtObject && GazeManager.Instance.HitObject.GetComponent<ObjectMarker>())
             ObjectLocator.Instance.DeleteObject(GazeManager.Instance.HitObject);
         else
-            ImageCapture.Instance.StartStopCapturing();
+        {
+            if (AppManager.Instance.autoMode)
+                ImageCapture.Instance.StartStopCapturing();
+            else
+                ImageCapture.Instance.CaptureImage();
+        }
     }
 }

@@ -155,13 +155,19 @@ public class ObjectLocator : Singleton<ObjectLocator> {
         }
         else
         {
-            GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
-            //GameObject.Instantiate(labelPrefab as Object, pos, Camera.main.transform.rotation, markerContainer) as GameObject;
-            ObjectMarker label = go.GetComponent<ObjectMarker>();
+            ObjectMarker label = CreateMarker();
             label.SetLabel(pos, obj.type, obj.type + ":" + (obj.score * 100).ToString("00.0"));
 
             markers.Add(label);
+            PersistenceManager.Instance.AddAnchor(label.gameObject);
         }
+    }
+
+    public ObjectMarker CreateMarker()
+    {
+        GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
+        ObjectMarker label = go.GetComponent<ObjectMarker>();
+        return label;
     }
 
     bool IsOverlappingSimilarMarker(Vector3 pos, string type)
