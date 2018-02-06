@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311995, g: 0.38074034, b: 0.35872716, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -108,6 +108,11 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &41122278 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1068724462462708, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
+    type: 2}
+  m_PrefabInternal: {fileID: 1562674456}
 --- !u!114 &90822368 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114445372107651228, guid: cd7a00f6a6e1a2c4089fce3144b807cb,
@@ -565,6 +570,7 @@ MonoBehaviour:
   serverAddress: http://10.208.23.223:5000
   queryAPI: /queryimg
   scanRate: 1.5
+  debugCanvas: {fileID: 41122278}
 --- !u!1001 &1562674456
 Prefab:
   m_ObjectHideFlags: 0
