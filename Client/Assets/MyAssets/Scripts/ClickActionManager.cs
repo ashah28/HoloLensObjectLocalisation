@@ -10,7 +10,8 @@ public class ClickActionManager : MonoBehaviour {
     [SerializeField] float doubleClickDuration = 0.3f;
 
     // Use this for initialization
-    void OnEnable () {
+    void OnEnable ()
+    {
         InputManager.holoClickDelegate += OnInputClicked;
     }
 

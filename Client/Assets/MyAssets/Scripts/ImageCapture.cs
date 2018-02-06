@@ -18,11 +18,6 @@ public class ImageCapture :  Singleton<ImageCapture>
 
     [SerializeField] RawImage previewImage;
     
-    [SerializeField] string serverAddress;
-    [SerializeField] string queryAPI;
-
-    [SerializeField] float scanRate;
-
     Boolean capturingImages;
     Boolean lastResponseRecieved = true;
 
@@ -31,9 +26,6 @@ public class ImageCapture :  Singleton<ImageCapture>
     /// </summary>
     void OnEnable()
     {
-        StartCoroutine(CheckServerStatus());
-        StartCoroutine(FetchSettings());
-
         if (!Application.isEditor)
         {
             Resolution cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).Last();
@@ -85,10 +77,11 @@ public class ImageCapture :  Singleton<ImageCapture>
         capturingImages = !capturingImages;
 
         if (capturingImages)
-            InvokeRepeating("CaptureImage", scanRate, scanRate);
+            InvokeRepeating("CaptureImage", 0, AppManager.Instance.scanRate);
         else
             CancelInvoke("CaptureImage");
-        DebugManager.Instance.PrintToRunningLog("Capturing images:" + capturingImages);
+        DebugManager.Instance.PrintToRunningLog("Capturing images:" + capturingImages 
+            + "@" + AppManager.Instance.scanRate);
     }
     
     /// <summary>
@@ -168,7 +161,7 @@ public class ImageCapture :  Singleton<ImageCapture>
         WWWForm form = new WWWForm();
         form.AddBinaryData("image", imageData, GenerateFileName() + ".jpg", "image/jpeg");
         DebugManager.Instance.PrintToInfoLog("Sending request of " + (imageData.Length / 1024) + "kBs");
-        WWW www = new WWW(serverAddress + queryAPI, form);
+        WWW www = new WWW(AppManager.Instance.serverAddress + AppManager.Instance.queryAPI, form);
         //while(www.uploadProgress != 1)
         //{            
         //    DebugManager.Instance.PrintToRunningLog("Upload %:" + (www.uploadProgress * 100).ToString("00.00"));
@@ -193,37 +186,12 @@ public class ImageCapture :  Singleton<ImageCapture>
     }
 
     /// <summary>
-    /// Confirms if server is accessibke
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator CheckServerStatus()
-    {
-        WWW www = new WWW(serverAddress);
-        yield return www;
-        DebugManager.Instance.PrintToInfoLog("Server Status-> " + (www.error == null ? www.text : " ERR :" + www.error));
-
-        DebugManager.Instance.PrintToRunningLog("Screen W:" + Screen.width + " H:" + Screen.height);
-    }
-
-    /// <summary>
-    /// Fetches settings dynamically on each load
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator FetchSettings()
-    {
-        WWW www = new WWW(serverAddress + "/settings");
-        yield return www;
-        
-        SettingsJSON settings = JsonUtility.FromJson<SettingsJSON>(www.text);
-    }
-
-    /// <summary>
     /// Parse a static sample response for the sake of faster testing
     /// </summary>
     /// <returns></returns>
     IEnumerator ParseSampleResponse()
     {
-        WWW www = new WWW(serverAddress + "/resp");
+        WWW www = new WWW(AppManager.Instance.serverAddress + "/sample_resp");
         yield return www;
 
         if(www.error != null)
