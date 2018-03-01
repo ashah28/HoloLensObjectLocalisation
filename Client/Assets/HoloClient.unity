@@ -579,7 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6891c7b7ed707a845bfb26e764ec5ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverAddress: http://10.208.23.223:5000
+  serverAddress: http://10.208.20.31:5000
   queryAPI: /queryimg
   scanPeriod: 1.5
   autoMode: 1
@@ -1110,6 +1110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   labelMesh: {fileID: 2021266057}
   type: 
+  confScore: 0
 --- !u!23 &2137589894
 MeshRenderer:
   m_ObjectHideFlags: 0

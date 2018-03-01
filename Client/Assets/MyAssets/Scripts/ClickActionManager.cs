@@ -30,7 +30,7 @@ public class ClickActionManager : MonoBehaviour {
         {
             CancelInvoke("Click");
             ObjectLocator.Instance.ClearMarkers();
-
+            PersistenceManager.Instance.ClearAllAnchors();
             print("Double click");
         }
         //count for single

@@ -68,8 +68,6 @@ public class ObjectLocator : Singleton<ObjectLocator> {
     {
         foreach (RecognisedObject o in resp.recognizedObjects)
         {
-            //StartCoroutine(DefineBoundary(o.type, (int) (o.details[0] * camResolutionWidth), (int)(o.details[2] * camResolutionWidth),
-            //    (int)(o.details[1] * camResolutionHeight), (int)(o.details[3] * camResolutionHeight), o.score));
             Vector3? hitPoint = PixelToWorldPoint(new Vector2(o.details[0] + (o.details[2] - o.details[0]) / 2, 
                                         o.details[1] + (o.details[3] - o.details[1]) / 2),
                                 cameraToWorldMatrix, projectionMatrix);
@@ -155,11 +153,11 @@ public class ObjectLocator : Singleton<ObjectLocator> {
         }
         else
         {
-            ObjectMarker label = CreateMarker();
-            label.SetLabel(pos, obj.type, obj.type + ":" + (obj.score * 100).ToString("00.0"));
+            ObjectMarker marker = CreateMarker();
+            marker.SetProperties(pos, obj.type, obj.score * 100);
 
-            markers.Add(label);
-            PersistenceManager.Instance.AddAnchor(label.gameObject);
+            markers.Add(marker);
+            PersistenceManager.Instance.AddAnchor(marker);
         }
     }
 

@@ -4,21 +4,41 @@ using UnityEngine;
 
 public class ObjectMarker : MonoBehaviour {
 
+    /// <summary>
+    /// Label to show details on
+    /// </summary>
     [SerializeField] TextMesh labelMesh;
-    public string type;
-
 
     /// <summary>
-    /// Sets the label type etc. upon init
+    /// Type of the detected object
+    /// </summary>
+    public string type;
+
+    /// <summary>
+    /// Holds the value of confidence of the prediction in percent (eg 98.2 out of 100)
+    /// </summary>
+    public float confScore;
+
+    /// <summary>
+    /// Sets the properties... type etc. upon init
     /// </summary>
     /// <param name="pos">position</param>
     /// <param name="type">type</param>
     /// <param name="label">text for label</param>
-    public void SetLabel(Vector3 pos, string type, string label)
+    public void SetProperties(Vector3 pos, string type, float confScore)
     {
         transform.position = pos;
-        this.labelMesh.text = label;
         this.type = type;
+        this.confScore = confScore;
+        SetLabel();
+    }
+
+    /// <summary>
+    /// Sets the label for the marker
+    /// </summary>
+    void SetLabel()
+    {
+        this.labelMesh.text = type + ":" + confScore.ToString("00.0");
     }
 
     /// <summary>
