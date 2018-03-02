@@ -179,10 +179,35 @@ public class ImageCapture :  Singleton<ImageCapture>
         imageData = null;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
 
-        ObjectLocator.Instance.LocateInScene(resp, cameraToWorldMatrix, projectionMatrix);
+        ParseResponse(resp, cameraToWorldMatrix, projectionMatrix);
 
         lastResponseRecieved = true;
         DebugManager.Instance.PrintToInfoLog("Last response analysed.");
+    }
+
+    void ParseResponse(ResponseStruct resp, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
+    {
+        foreach (RecognisedObject obj in resp.recognizedObjects)
+        {
+            Vector3? hitPoint = ObjectLocator.Instance.PixelToWorldPoint(new Vector2(obj.details[0] + (obj.details[2] - obj.details[0]) / 2,
+                                            obj.details[1] + (obj.details[3] - obj.details[1]) / 2),
+                                    cameraToWorldMatrix, projectionMatrix);
+
+            if (hitPoint.HasValue)
+            {
+                ObjectMarker marker = ObjectLocator.Instance.AttemptToDropMarker(hitPoint.Value, obj);
+
+                //Only if positioning allowed
+                if(marker)
+                {
+                    //if needed
+                    DebugManager.Instance.PrintToInfoLog("Marker  " + marker + " : " + hitPoint.Value);
+                    PersistenceManager.Instance.AddAnchor(marker);
+                }                
+            }
+            else
+                DebugManager.Instance.PrintToRunningLog("No boundary found");
+        }
     }
 
     /// <summary>
@@ -204,8 +229,15 @@ public class ImageCapture :  Singleton<ImageCapture>
         Matrix4x4 lastProjectionMatrix = Matrix4x4.identity;
         ResponseStruct resp = JsonUtility.FromJson<ResponseStruct>(www.text);
         print("Response Length: " + resp.recognizedObjects.Length);
-        ObjectLocator.Instance.LocateInScene(resp, lastCameraToWorldMatrix, lastProjectionMatrix);
-        ObjectLocator.Instance.DropMarker(new Vector3(0, 0.5f, 5), resp.recognizedObjects[0]);
+
+        RecognisedObject obj = resp.recognizedObjects[0];
+        Vector3? hitPoint = ObjectLocator.Instance.PixelToWorldPoint(new Vector2(obj.details[0] + (obj.details[2] - obj.details[0]) / 2,
+                                            obj.details[1] + (obj.details[3] - obj.details[1]) / 2), lastCameraToWorldMatrix, lastProjectionMatrix);
+
+        if (hitPoint.HasValue)
+            ObjectLocator.Instance.AttemptToDropMarker(new Vector3(0, 0.5f, 5), resp.recognizedObjects[0]);
+        else
+            DebugManager.Instance.PrintToRunningLog("No boundary found");
     }
 
     /// <summary>

@@ -38,7 +38,7 @@ public class ObjectMarker : MonoBehaviour {
     /// </summary>
     void SetLabel()
     {
-        this.labelMesh.text = type + ":" + confScore.ToString("00.0");
+        this.labelMesh.text = type + ":" + (confScore*100).ToString("00.0");
     }
 
     /// <summary>

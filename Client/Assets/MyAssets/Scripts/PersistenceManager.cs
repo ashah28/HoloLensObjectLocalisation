@@ -20,6 +20,8 @@ public class PersistenceManager : Singleton<PersistenceManager>
         {
             store.Clear();
         }
+        else
+            DebugManager.Instance.PrintToInfoLog("Store uninitialised");
     }
 
     void StoreLoaded(WorldAnchorStore store)
@@ -34,13 +36,17 @@ public class PersistenceManager : Singleton<PersistenceManager>
         DebugManager.Instance.PrintToInfoLog("persistence : " + store.anchorCount);
         for (int index = 0; index < ids.Length; index++)
         {
-            ObjectMarker om = ObjectLocator.Instance.CreateMarker();
-
             ///[0]: Marker type
             ///[1]: Marker confidence score
             ///[2]: Marker additional info(random number for now)
             string[] chunks = ids[index].Split(':');
-            om.SetProperties(Vector3.zero, chunks[0], float.Parse(chunks[1]));
+
+            RecognisedObject obj = new RecognisedObject
+            {
+                type = chunks[0],
+                score = float.Parse(chunks[1])
+            };
+            ObjectMarker om = ObjectLocator.Instance.AttemptToDropMarker(Vector3.zero, obj);
 
             store.Load(ids[index], om.gameObject);
             DebugManager.Instance.PrintToInfoLog(ids[index] + "@" + om.transform.position);
@@ -59,7 +65,7 @@ public class PersistenceManager : Singleton<PersistenceManager>
 
         WorldAnchor wa = go.AddComponent<WorldAnchor>();
 
-        bool saved = store.Save(marker.type + ":" + marker.confScore + ":" + Random.Range(0, 100000).ToString(), wa);
+        bool saved = store.Save(marker.type + ":" + marker.confScore.ToString("00.0") + ":" + Random.Range(0, 100000).ToString(), wa);
         DebugManager.Instance.PrintToInfoLog("saved:" + saved + "@" + go.transform.position);
     }
 }

@@ -59,34 +59,13 @@ public class ObjectLocator : Singleton<ObjectLocator> {
     }
 
     /// <summary>
-    /// Locate the object position in real world. Calls Dropmarker if hit otherwise ignores
-    /// </summary>
-    /// <param name="resp">The response structure</param>
-    /// <param name="cameraToWorldMatrix">cameraToWorldMatrix</param>
-    /// <param name="projectionMatrix">cameraProjectionMatrix</param>
-	public void LocateInScene(ResponseStruct resp, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
-    {
-        foreach (RecognisedObject o in resp.recognizedObjects)
-        {
-            Vector3? hitPoint = PixelToWorldPoint(new Vector2(o.details[0] + (o.details[2] - o.details[0]) / 2, 
-                                        o.details[1] + (o.details[3] - o.details[1]) / 2),
-                                cameraToWorldMatrix, projectionMatrix);
-
-            if(hitPoint.HasValue)
-                DropMarker(hitPoint.Value, o);
-            else
-                DebugManager.Instance.PrintToRunningLog("No boundary found");
-        }
-    }
-
-    /// <summary>
     /// This is where the actual magic happens. Calculates the 3D direction where the object sits
     /// </summary>
     /// <param name="pixelPos">pixelPosition as given by CNN. Will be converted to Unity compatible</param>
     /// <param name="cameraToWorldMatrix">cameraToWorldMatrix</param>
     /// <param name="projectionMatrix">projectionMatrix</param>
     /// <returns>Returns a nullable vector3 with position of the hit point if a collider found. Returns null if miss</returns>
-    Vector3? PixelToWorldPoint(Vector2 pixelPos, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
+    public Vector3? PixelToWorldPoint(Vector2 pixelPos, Matrix4x4 cameraToWorldMatrix, Matrix4x4 projectionMatrix)
     {
         //Pixel positions : Unity starts from bottom left. CNN start from top left.
         pixelPos.y = 1 - pixelPos.y;
@@ -141,27 +120,33 @@ public class ObjectLocator : Singleton<ObjectLocator> {
 
 
     /// <summary>
-    /// Drops the label and the marker at the given position
+    /// Attempts to Drops the label and the marker at the given position if no overlaps found
     /// </summary>
-    /// <param name="pos"></param>
-    /// <param name="obj"></param>
-    public void DropMarker(Vector3 pos, RecognisedObject obj)
+    /// <param name="pos">Position</param>
+    /// <param name="obj">RecognisedObject</param> 
+    /// <returns>The Object Marker object</returns>
+    public ObjectMarker AttemptToDropMarker(Vector3 pos, RecognisedObject obj)
     {
         if (IsOverlappingSimilarMarker(pos, obj.type))
         {
             DebugManager.Instance.PrintToRunningLog("Similar marker: " + obj.type);
+            return null;
         }
         else
         {
             ObjectMarker marker = CreateMarker();
-            marker.SetProperties(pos, obj.type, obj.score * 100);
+            marker.SetProperties(pos, obj.type, obj.score);
 
             markers.Add(marker);
-            PersistenceManager.Instance.AddAnchor(marker);
+            return marker;
         }
     }
 
-    public ObjectMarker CreateMarker()
+    /// <summary>
+    /// Creates a marker game object
+    /// </summary>
+    /// <returns>The Object Marker object</returns>
+    ObjectMarker CreateMarker()
     {
         GameObject go = GameObject.Instantiate(labelPrefab as Object, markersParent) as GameObject;
         ObjectMarker label = go.GetComponent<ObjectMarker>();
