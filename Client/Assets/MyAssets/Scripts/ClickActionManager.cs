@@ -8,17 +8,16 @@ public class ClickActionManager : MonoBehaviour, IInputClickHandler {
     float lastClickTimestamp;
 
     [SerializeField] float doubleClickDuration = 0.3f;
+    [SerializeField] GameObject objectMenu;
 
     // Use this for initialization
     void Start ()
     {
         InputManager.Instance.PushFallbackInputHandler(gameObject);
     }
-
-
-
+    
     /// <summary>
-    /// Called whenever a click is registered on Hololens. Blocked by nothing! Pure, simple, holo click...
+    /// Called whenever a click is registered on Hololens.
     /// </summary>
     public virtual void OnInputClicked(InputClickedEventData eventData)
     {
@@ -44,7 +43,10 @@ public class ClickActionManager : MonoBehaviour, IInputClickHandler {
     void Click()
     {
         if (GazeManager.Instance.IsGazingAtObject && GazeManager.Instance.HitObject.GetComponent<ObjectMarker>())
+        {
+            ToggleMenuVisibility(GazeManager.Instance.HitObject.transform.position + new Vector3(0.1f,-0.1f,0.1f));
             ObjectLocator.Instance.DeleteObject(GazeManager.Instance.HitObject);
+        }
         else
         {
             if (AppManager.Instance.autoMode)
@@ -52,5 +54,11 @@ public class ClickActionManager : MonoBehaviour, IInputClickHandler {
             else
                 ImageCapture.Instance.CaptureImage();
         }
+    }
+
+    void ToggleMenuVisibility(Vector3 position)
+    {
+        objectMenu.SetActive(!objectMenu.activeSelf);
+        objectMenu.transform.position = position;
     }
 }
