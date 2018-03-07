@@ -49,12 +49,6 @@ namespace HoloToolkit.Unity.InputModule
         private DictationEventData dictationEventData;
 
 
-        ///Custom code to get a click event passthrough
-        ///
-        public delegate void OnHoloClickDelegate();
-        public static OnHoloClickDelegate holoClickDelegate;
-
-
         /// <summary>
         /// Indicates if input is currently enabled or not.
         /// </summary>
@@ -351,10 +345,6 @@ namespace HoloToolkit.Unity.InputModule
         private static readonly ExecuteEvents.EventFunction<IInputClickHandler> OnInputClickedEventHandler =
             delegate (IInputClickHandler handler, BaseEventData eventData)
             {
-                //Custom code: To get click passthrough
-                if(holoClickDelegate != null)
-                    holoClickDelegate();
-
                 InputClickedEventData casted = ExecuteEvents.ValidateEventData<InputClickedEventData>(eventData);
                 handler.OnInputClicked(casted);
             };

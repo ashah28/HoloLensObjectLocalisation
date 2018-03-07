@@ -3,28 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity.InputModule;
 
-public class ClickActionManager : MonoBehaviour {
+public class ClickActionManager : MonoBehaviour, IInputClickHandler {
 
     float lastClickTimestamp;
 
     [SerializeField] float doubleClickDuration = 0.3f;
 
     // Use this for initialization
-    void OnEnable ()
+    void Start ()
     {
-        InputManager.holoClickDelegate += OnInputClicked;
+        InputManager.Instance.PushFallbackInputHandler(gameObject);
     }
 
-    private void OnDisable()
-    {
-        InputManager.holoClickDelegate -= OnInputClicked;
-    }
+
 
     /// <summary>
     /// Called whenever a click is registered on Hololens. Blocked by nothing! Pure, simple, holo click...
     /// </summary>
-    public void OnInputClicked()
+    public virtual void OnInputClicked(InputClickedEventData eventData)
     {
+        print("on click");
         //double click
         if (IsInvoking("Click"))
         {
