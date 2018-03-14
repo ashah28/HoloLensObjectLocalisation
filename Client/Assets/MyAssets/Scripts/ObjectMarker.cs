@@ -41,7 +41,7 @@ public class ObjectMarker : MonoBehaviour
         transform.position = pos;
         this.type = type;
         this.confScore = confScore;
-        this.markerName = type + ":" + confScore.ToString("00.0") + ":"
+        this.markerName = type + ":" + confScore.ToString("00.000") + ":"
             + Random.Range(0, 100000).ToString();
         SetLabel();
     }
@@ -53,16 +53,20 @@ public class ObjectMarker : MonoBehaviour
     {
         this.labelMesh.text = type + ":" + (confScore * 100).ToString("00.0");
     }
-
-
+    
     /// <summary>
     /// Renames the type of this object
     /// </summary>
     /// <param name="name">The name.</param>
     public void Rename(string name)
     {
+
+        PersistenceManager.Instance.DeleteAnchor(markerName);
         this.type = name;
+        this.markerName = type + ":" + confScore.ToString("00.000") + ":"
+             + Random.Range(0, 100000).ToString();
         SetLabel();
+        PersistenceManager.Instance.AddAnchor(this);
     }
 
     /// <summary>

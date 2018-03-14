@@ -71,7 +71,11 @@ public class ImageCapture :  Singleton<ImageCapture>
         if (DebugManager.Instance)
             DebugManager.Instance.PrintToRunningLog("Cam disabled");
     }
-    
+
+
+    /// <summary>
+    /// Starts and stops the capturing.
+    /// </summary>
     public void StartStopCapturing()
     {
         capturingImages = !capturingImages;

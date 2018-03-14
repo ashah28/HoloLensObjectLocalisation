@@ -45,6 +45,15 @@ public class AppManager : Singleton<AppManager> {
         StartCoroutine(CheckServerStatus());
         StartCoroutine(FetchSettings());
     }
+
+    /// <summary>
+    /// Quits the application.
+    /// </summary>
+    public void QuitApp()
+    {
+        print("quit");
+        Application.Quit();
+    }
     
     /// <summary>
     /// Confirms if server is accessibke

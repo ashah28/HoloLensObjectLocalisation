@@ -26,7 +26,7 @@ public class OptionsManager : Singleton<OptionsManager> {
                 keyboard = null;
 
                 DebugManager.Instance.PrintToInfoLog("Renaming " + lastMarker + " to " + keyboardText);
-                PersistenceManager.Instance.DeleteAnchor(lastMarker.markerName);
+
                 lastMarker.Rename(keyboardText);
                 ToggleMenuVisibility(lastMarker.gameObject);
             }

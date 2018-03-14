@@ -33,7 +33,7 @@ public class PersistenceManager : Singleton<PersistenceManager>
     void GetAllAnchors()
     {
         string[] ids = this.store.GetAllIds();
-        DebugManager.Instance.PrintToInfoLog("persistence : " + store.anchorCount);
+        DebugManager.Instance.PrintToInfoLog("persistence : " + store.anchorCount + " " + ids.Length);
         for (int index = 0; index < ids.Length; index++)
         {
             ///[0]: Marker type
@@ -64,14 +64,21 @@ public class PersistenceManager : Singleton<PersistenceManager>
             return;
         }
 
-        WorldAnchor wa = go.AddComponent<WorldAnchor>();
+        WorldAnchor wa = go.GetComponent<WorldAnchor>();
+        if (wa == null)
+        {  
+            wa = go.AddComponent<WorldAnchor>();
+        }
+        else
+            DebugManager.Instance.PrintToInfoLog("Already anchored:" + marker.markerName);
 
-        bool saved = store.Save(marker.name, wa);
-        DebugManager.Instance.PrintToInfoLog("saved:" + saved + "@" + go.transform.position);
+
+        bool saved = store.Save(marker.markerName, wa);
+        DebugManager.Instance.PrintToInfoLog("saved:" + marker.markerName + "::" + saved + "@" + go.transform.position);
     }
 
     public void DeleteAnchor(string markerName)
     {
-        DebugManager.Instance.PrintToInfoLog("Anchor deleted: " + store.Delete(markerName));
+        DebugManager.Instance.PrintToInfoLog("Anchor " + markerName + " deleted: " + store.Delete(markerName));
     }
 }

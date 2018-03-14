@@ -229,6 +229,40 @@ MonoBehaviour:
           m_CallState: 1
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
+  - Keyword: quit
+    Response:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1542775325}
+          m_MethodName: QuitApp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 1
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+  - Keyword: toggle scanning
+    Response:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1542775320}
+          m_MethodName: StartStopCapturing
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 1
+      m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
   IsGlobalListener: 1
 --- !u!114 &172359816
 MonoBehaviour:
@@ -251,9 +285,9 @@ MonoBehaviour:
     KeyCode: 51
   - Keyword: rename
     KeyCode: 52
-  - Keyword: start scanning
+  - Keyword: toggle scanning
     KeyCode: 53
-  - Keyword: stop scanning
+  - Keyword: quit
     KeyCode: 54
 --- !u!1 &596549540
 GameObject:
@@ -1304,7 +1338,7 @@ Transform:
   m_GameObject: {fileID: 2137589891}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.67, y: 0, z: 3.74}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children:
   - {fileID: 2021266059}
   m_Father: {fileID: 1542775321}
