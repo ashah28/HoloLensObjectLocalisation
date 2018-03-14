@@ -25,7 +25,7 @@ public class ObjectMarker : MonoBehaviour
     public string markerName;
 
     /// <summary>
-    /// Holds the value of confidence of the prediction in percent (eg 98.2 out of 100)
+    /// Holds the value of confidence of the prediction in percent ( 0 to 1)
     /// </summary>
     public float confScore;
 
@@ -61,7 +61,7 @@ public class ObjectMarker : MonoBehaviour
     public void Rename(string name)
     {
 
-        PersistenceManager.Instance.DeleteAnchor(markerName);
+        PersistenceManager.Instance.DeleteAnchor(this);
         this.type = name;
         this.markerName = type + ":" + confScore.ToString("00.000") + ":"
              + Random.Range(0, 100000).ToString();

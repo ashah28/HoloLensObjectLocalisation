@@ -77,8 +77,13 @@ public class PersistenceManager : Singleton<PersistenceManager>
         DebugManager.Instance.PrintToInfoLog("saved:" + marker.markerName + "::" + saved + "@" + go.transform.position);
     }
 
-    public void DeleteAnchor(string markerName)
+    public void DeleteAnchor(ObjectMarker om)
     {
-        DebugManager.Instance.PrintToInfoLog("Anchor " + markerName + " deleted: " + store.Delete(markerName));
+        string markerName = om.markerName;
+        WorldAnchor wa = om.GetComponent<WorldAnchor>();
+        if (wa)
+            DestroyImmediate(om.GetComponent<WorldAnchor>());
+
+        DebugManager.Instance.PrintToInfoLog("Anchor " + markerName + " deleted: " + store.Delete(markerName) + ":: " + wa);
     }
 }

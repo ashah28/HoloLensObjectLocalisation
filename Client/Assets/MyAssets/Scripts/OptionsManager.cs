@@ -55,6 +55,7 @@ public class OptionsManager : Singleton<OptionsManager> {
                 go.GetComponent<MoveWithObject>().StopRunning();
                 Destroy(go.GetComponent<MoveWithObject>());
             }
+            Pin();
             gameObject.SetActive(false);
             lastMarker = null;
         }
@@ -69,7 +70,7 @@ public class OptionsManager : Singleton<OptionsManager> {
         if (lastMarker)
         {
             GameObject buffer = lastMarker.gameObject;
-            PersistenceManager.Instance.DeleteAnchor(lastMarker.markerName);
+            PersistenceManager.Instance.DeleteAnchor(lastMarker);
             ToggleMenuVisibility(buffer);
             ObjectLocator.Instance.DeleteObject(buffer);            
         }
@@ -81,8 +82,10 @@ public class OptionsManager : Singleton<OptionsManager> {
     public void Placement()
     {
         DebugManager.Instance.PrintToInfoLog("Placement"+lastMarker);
+
         if (lastMarker)
         {
+            PersistenceManager.Instance.DeleteAnchor(lastMarker);
             MoveWithObject mwo = lastMarker.gameObject.AddComponent<MoveWithObject>() as MoveWithObject;
             mwo.StartRunning();
             gameObject.SetActive(false);
