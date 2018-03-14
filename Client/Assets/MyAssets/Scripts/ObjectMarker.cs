@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectMarker : MonoBehaviour {
+/// <summary>
+/// Object marker class
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
+public class ObjectMarker : MonoBehaviour
+{
 
     /// <summary>
     /// Label to show details on
@@ -15,6 +20,11 @@ public class ObjectMarker : MonoBehaviour {
     public string type;
 
     /// <summary>
+    /// Name used for the label and storage
+    /// </summary>
+    public string markerName;
+
+    /// <summary>
     /// Holds the value of confidence of the prediction in percent (eg 98.2 out of 100)
     /// </summary>
     public float confScore;
@@ -24,12 +34,15 @@ public class ObjectMarker : MonoBehaviour {
     /// </summary>
     /// <param name="pos">position</param>
     /// <param name="type">type</param>
-    /// <param name="label">text for label</param>
+    /// <param name="confScore">The conf score.</param>
+    /// <param name="markerName">Name of the marker.</param>
     public void SetProperties(Vector3 pos, string type, float confScore)
     {
         transform.position = pos;
         this.type = type;
         this.confScore = confScore;
+        this.markerName = type + ":" + confScore.ToString("00.0") + ":"
+            + Random.Range(0, 100000).ToString();
         SetLabel();
     }
 
@@ -38,7 +51,18 @@ public class ObjectMarker : MonoBehaviour {
     /// </summary>
     void SetLabel()
     {
-        this.labelMesh.text = type + ":" + (confScore*100).ToString("00.0");
+        this.labelMesh.text = type + ":" + (confScore * 100).ToString("00.0");
+    }
+
+
+    /// <summary>
+    /// Renames the type of this object
+    /// </summary>
+    /// <param name="name">The name.</param>
+    public void Rename(string name)
+    {
+        this.type = name;
+        SetLabel();
     }
 
     /// <summary>

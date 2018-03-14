@@ -195,15 +195,7 @@ public class ImageCapture :  Singleton<ImageCapture>
 
             if (hitPoint.HasValue)
             {
-                ObjectMarker marker = ObjectLocator.Instance.AttemptToDropMarker(hitPoint.Value, obj);
-
-                //Only if positioning allowed
-                if(marker)
-                {
-                    //if needed
-                    DebugManager.Instance.PrintToInfoLog("Marker  " + marker + " : " + hitPoint.Value);
-                    PersistenceManager.Instance.AddAnchor(marker);
-                }                
+                ObjectMarker marker = ObjectLocator.Instance.AttemptToDropMarker(hitPoint.Value, obj);               
             }
             else
                 DebugManager.Instance.PrintToRunningLog("No boundary found");

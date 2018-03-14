@@ -8,7 +8,6 @@ public class ClickActionManager : MonoBehaviour, IInputClickHandler {
     float lastClickTimestamp;
 
     [SerializeField] float doubleClickDuration = 0.3f;
-    [SerializeField] GameObject objectMenu;
 
     // Use this for initialization
     void Start ()
@@ -44,8 +43,7 @@ public class ClickActionManager : MonoBehaviour, IInputClickHandler {
     {
         if (GazeManager.Instance.IsGazingAtObject && GazeManager.Instance.HitObject.GetComponent<ObjectMarker>())
         {
-            ToggleMenuVisibility(GazeManager.Instance.HitObject.transform.position + new Vector3(0.1f,-0.1f,0.1f));
-            ObjectLocator.Instance.DeleteObject(GazeManager.Instance.HitObject);
+            OptionsManager.Instance.ToggleMenuVisibility(GazeManager.Instance.HitObject);
         }
         else
         {
@@ -54,11 +52,5 @@ public class ClickActionManager : MonoBehaviour, IInputClickHandler {
             else
                 ImageCapture.Instance.CaptureImage();
         }
-    }
-
-    void ToggleMenuVisibility(Vector3 position)
-    {
-        objectMenu.SetActive(!objectMenu.activeSelf);
-        objectMenu.transform.position = position;
     }
 }

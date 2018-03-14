@@ -47,6 +47,7 @@ public class PersistenceManager : Singleton<PersistenceManager>
                 score = float.Parse(chunks[1])
             };
             ObjectMarker om = ObjectLocator.Instance.AttemptToDropMarker(Vector3.zero, obj);
+            om.markerName = ids[index];
 
             store.Load(ids[index], om.gameObject);
             DebugManager.Instance.PrintToInfoLog(ids[index] + "@" + om.transform.position);
@@ -65,7 +66,12 @@ public class PersistenceManager : Singleton<PersistenceManager>
 
         WorldAnchor wa = go.AddComponent<WorldAnchor>();
 
-        bool saved = store.Save(marker.type + ":" + marker.confScore.ToString("00.0") + ":" + Random.Range(0, 100000).ToString(), wa);
+        bool saved = store.Save(marker.name, wa);
         DebugManager.Instance.PrintToInfoLog("saved:" + saved + "@" + go.transform.position);
+    }
+
+    public void DeleteAnchor(string markerName)
+    {
+        DebugManager.Instance.PrintToInfoLog("Anchor deleted: " + store.Delete(markerName));
     }
 }

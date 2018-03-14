@@ -68,6 +68,12 @@ public class AppManager : Singleton<AppManager> {
         WWW www = new WWW(serverAddress + "/settings");
         yield return www;
 
+        if (www.error != string.Empty)
+        {
+            print(www.error);
+            yield break;
+        }
+
         SettingsJSON settings = JsonUtility.FromJson<SettingsJSON>(www.text);
         DebugManager.Instance.PrintToRunningLog("Debug:" + settings.debugActive 
             + " Period:" + settings.refreshPeriod + " Auto: " + settings.autoMode);
