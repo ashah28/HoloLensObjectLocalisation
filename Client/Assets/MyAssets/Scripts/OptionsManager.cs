@@ -11,6 +11,8 @@ public class OptionsManager : Singleton<OptionsManager> {
     UnityEngine.TouchScreenKeyboard keyboard;
     public static string keyboardText = "";
 
+    public bool needsRepinning = false;
+
     // Use this for initialization
     void Start () {
         gameObject.SetActive(false);
@@ -54,8 +56,13 @@ public class OptionsManager : Singleton<OptionsManager> {
             {
                 go.GetComponent<MoveWithObject>().StopRunning();
                 Destroy(go.GetComponent<MoveWithObject>());
+                if (needsRepinning)
+                {
+                    needsRepinning = false;
+                    PersistenceManager.Instance.AddAnchor(lastMarker);
+                }
             }
-            Pin();
+
             gameObject.SetActive(false);
             lastMarker = null;
         }
@@ -85,7 +92,11 @@ public class OptionsManager : Singleton<OptionsManager> {
 
         if (lastMarker)
         {
-            PersistenceManager.Instance.DeleteAnchor(lastMarker);
+            if (PersistenceManager.Instance.IsAnchor(lastMarker))
+            {
+                PersistenceManager.Instance.DeleteAnchor(lastMarker);
+                needsRepinning = true;
+            }
             MoveWithObject mwo = lastMarker.gameObject.AddComponent<MoveWithObject>() as MoveWithObject;
             mwo.StartRunning();
             gameObject.SetActive(false);

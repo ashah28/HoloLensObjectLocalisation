@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 135413852182161016}
   - component: {fileID: 23356925672905416}
   - component: {fileID: 114398907260816536}
+  - component: {fileID: 65937417529148248}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -275,6 +276,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1482396319355476}
   m_Mesh: {fileID: 4300000, guid: 0fe9b26a8b3ac7d42a9184c20f89ce9d, type: 3}
+--- !u!65 &65937417529148248
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1898281520584054}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.7, z: 1}
+  m_Center: {x: 0, y: 0.15, z: 0}
 --- !u!102 &102790374851560716
 TextMesh:
   serializedVersion: 3
@@ -345,7 +358,7 @@ SphereCollider:
   m_GameObject: {fileID: 1898281520584054}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}

@@ -84,6 +84,11 @@ public class PersistenceManager : Singleton<PersistenceManager>
         if (wa)
             DestroyImmediate(om.GetComponent<WorldAnchor>());
 
-        DebugManager.Instance.PrintToInfoLog("Anchor " + markerName + " deleted: " + store.Delete(markerName) + ":: " + wa);
+        DebugManager.Instance.PrintToInfoLog("Anchor " + markerName + " deleted: " + (store != null ? store.Delete(markerName).ToString() : "No store.") + ":: " + wa);
+    }
+
+    public bool IsAnchor(ObjectMarker om)
+    {
+        return (om.GetComponent<WorldAnchor>() != null);
     }
 }
