@@ -6,9 +6,14 @@ using HoloToolkit.Unity;
 public class AppManager : Singleton<AppManager> {
 
     /// <summary>
-    /// The server address with port number
+    /// The public static server address with port number
     /// </summary>
-    public string serverAddress = " http://10.208.19.44:5000";
+    public string staticServerAddress = "http://10.208.19.44:5000";
+
+    /// <summary>
+    /// The application specific server address with port number
+    /// </summary>
+    public string serverAddress = "http://10.208.19.44:5000";
 
     /// <summary>
     /// The url address/page to query image contents
@@ -61,7 +66,17 @@ public class AppManager : Singleton<AppManager> {
     /// <returns></returns>
     IEnumerator CheckServerStatus()
     {
-        WWW www = new WWW(serverAddress);
+        WWW www = new WWW(staticServerAddress);
+        yield return www;
+        DebugManager.Instance.PrintToInfoLog("Static: " + (www.error == null ? www.text : " ERR :" + www.error));
+
+        if (string.IsNullOrEmpty(www.error))
+        {
+            serverAddress = www.text.Trim();
+            print(serverAddress);
+        }
+
+        www = new WWW(serverAddress);
         yield return www;
         DebugManager.Instance.PrintToInfoLog("Server Status-> " + (www.error == null ? www.text : " ERR :" + www.error));
 

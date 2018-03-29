@@ -852,6 +852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6891c7b7ed707a845bfb26e764ec5ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  staticServerAddress: http://tools.dtn.asu.edu/vr/data
   serverAddress: http://10.208.17.21:5000
   queryAPI: /queryimg
   scanPeriod: 1.5
