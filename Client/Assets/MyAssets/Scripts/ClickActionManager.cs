@@ -39,7 +39,7 @@ public class ClickActionManager : MonoBehaviour, IInputClickHandler {
     /// <summary>
     /// Trigger a single click
     /// </summary>
-    void Click()
+    public void Click()
     {
         if (GazeManager.Instance.IsGazingAtObject && GazeManager.Instance.HitObject.GetComponent<ObjectMarker>())
         {
