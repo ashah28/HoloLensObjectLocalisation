@@ -17,6 +17,7 @@ public class ImageCapture :  Singleton<ImageCapture>
     Texture2D targetTexture = null;
 
     [SerializeField] RawImage previewImage;
+    [SerializeField] GameObject recIcon;
     
     Boolean capturingImages;
     Boolean lastResponseRecieved = true;
@@ -80,10 +81,13 @@ public class ImageCapture :  Singleton<ImageCapture>
     {
         capturingImages = !capturingImages;
 
+        recIcon.SetActive(capturingImages);
+
         if (capturingImages)
             InvokeRepeating("CaptureImage", 0, AppManager.Instance.scanPeriod);
         else
             CancelInvoke("CaptureImage");
+
         DebugManager.Instance.PrintToRunningLog("Capturing images:" + capturingImages 
             + "@" + AppManager.Instance.scanPeriod);
     }

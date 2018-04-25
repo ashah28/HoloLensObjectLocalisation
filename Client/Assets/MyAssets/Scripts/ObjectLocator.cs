@@ -153,6 +153,14 @@ public class ObjectLocator : Singleton<ObjectLocator> {
         return label;
     }
 
+    /// <summary>
+    /// Determines whether [is overlapping similar marker] [the specified position].
+    /// </summary>
+    /// <param name="pos">The position.</param>
+    /// <param name="type">The type.</param>
+    /// <returns>
+    ///   <c>true</c> if [is overlapping similar marker] [the specified position]; otherwise, <c>false</c>.
+    /// </returns>
     bool IsOverlappingSimilarMarker(Vector3 pos, string type)
     {
         Vector3 offset;
@@ -173,6 +181,9 @@ public class ObjectLocator : Singleton<ObjectLocator> {
         return false;
     }
 
+    /// <summary>
+    /// Clears all the markers.
+    /// </summary>
     public void ClearMarkers()
     {
         foreach(ObjectMarker om in markers)
@@ -182,6 +193,10 @@ public class ObjectLocator : Singleton<ObjectLocator> {
         markers.Clear();
     }
 
+    /// <summary>
+    /// Deletes the object.
+    /// </summary>
+    /// <param name="obj">The object.</param>
     public void DeleteObject(GameObject obj)
     {
         print(obj);
@@ -195,6 +210,11 @@ public class ObjectLocator : Singleton<ObjectLocator> {
         Destroy(marker.gameObject);
     }
 
+    /// <summary>
+    /// Draws the line renderer to help debug.
+    /// </summary>
+    /// <param name="from">From.</param>
+    /// <param name="objPosition">The object position.</param>
     void DrawLineRenderer(Vector3 from, Vector3 objPosition)
     {
         LineRenderer line = GetComponent<LineRenderer>();

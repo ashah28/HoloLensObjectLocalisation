@@ -48,7 +48,6 @@ public class AppManager : Singleton<AppManager> {
     void OnEnable()
     {
         StartCoroutine(CheckServerStatus());
-        StartCoroutine(FetchSettings());
     }
 
     /// <summary>
@@ -74,6 +73,8 @@ public class AppManager : Singleton<AppManager> {
         {
             serverAddress = www.text.Trim();
             print(serverAddress);
+
+            StartCoroutine(FetchSettings());
         }
 
         www = new WWW(serverAddress);
@@ -92,9 +93,9 @@ public class AppManager : Singleton<AppManager> {
         WWW www = new WWW(serverAddress + "/settings");
         yield return www;
 
-        if (www.error != string.Empty)
+        if (! string.IsNullOrEmpty(www.error))
         {
-            print(www.error);
+            print("Error fetching settings from " + www.url + " :: " + www.error + ".");
             yield break;
         }
 

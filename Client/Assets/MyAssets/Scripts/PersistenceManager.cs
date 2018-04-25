@@ -14,6 +14,9 @@ public class PersistenceManager : Singleton<PersistenceManager>
         WorldAnchorStore.GetAsync(StoreLoaded);
 	}
 
+    /// <summary>
+    /// Clears all anchors.
+    /// </summary>
     public void ClearAllAnchors()
     {
         if(store != null)
@@ -24,12 +27,19 @@ public class PersistenceManager : Singleton<PersistenceManager>
             DebugManager.Instance.PrintToInfoLog("Store uninitialised");
     }
 
+    /// <summary>
+    /// This is called once the world anchor store has been fetched.
+    /// </summary>
+    /// <param name="store">The store.</param>
     void StoreLoaded(WorldAnchorStore store)
     {
         this.store = store;
         GetAllAnchors();
     }
 
+    /// <summary>
+    /// Gets all anchors.
+    /// </summary>
     void GetAllAnchors()
     {
         string[] ids = this.store.GetAllIds();
@@ -54,7 +64,11 @@ public class PersistenceManager : Singleton<PersistenceManager>
         }
     }
 
-	public void AddAnchor(ObjectMarker marker)
+    /// <summary>
+    /// Adds the anchor.
+    /// </summary>
+    /// <param name="marker">The marker.</param>
+    public void AddAnchor(ObjectMarker marker)
     {
         GameObject go = marker.gameObject;
 
@@ -77,6 +91,10 @@ public class PersistenceManager : Singleton<PersistenceManager>
         DebugManager.Instance.PrintToInfoLog("saved:" + marker.markerName + "::" + saved + "@" + go.transform.position);
     }
 
+    /// <summary>
+    /// Deletes the anchor.
+    /// </summary>
+    /// <param name="om">The om.</param>
     public void DeleteAnchor(ObjectMarker om)
     {
         string markerName = om.markerName;
@@ -87,6 +105,13 @@ public class PersistenceManager : Singleton<PersistenceManager>
         DebugManager.Instance.PrintToInfoLog("Anchor " + markerName + " deleted: " + (store != null ? store.Delete(markerName).ToString() : "No store.") + ":: " + wa);
     }
 
+    /// <summary>
+    /// Determines whether the specified marker is anchored.
+    /// </summary>
+    /// <param name="om">The om.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified om is anchored; otherwise, <c>false</c>.
+    /// </returns>
     public bool IsAnchor(ObjectMarker om)
     {
         return (om.GetComponent<WorldAnchor>() != null);
